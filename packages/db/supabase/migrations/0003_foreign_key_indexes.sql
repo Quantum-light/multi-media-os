@@ -1,0 +1,20 @@
+-- 0003 every foreign key gets a covering index (performance advisor).
+create index if not exists members_user on public.members (user_id);
+create index if not exists shows_brand on public.shows (brand_id);
+create index if not exists show_channels_ws on public.show_channels (workspace_id);
+create index if not exists show_channels_channel on public.show_channels (channel_id);
+create index if not exists episodes_ws_show on public.episodes (workspace_id, show_id);
+create index if not exists episodes_show on public.episodes (show_id);
+create index if not exists media_assets_episode on public.media_assets (episode_id);
+create index if not exists jobs_ws on public.jobs (workspace_id);
+create index if not exists job_events_ws on public.job_events (workspace_id);
+create index if not exists job_events_job on public.job_events (job_id);
+create index if not exists posts_ws_scheduled on public.posts (workspace_id, scheduled_for);
+create index if not exists posts_episode on public.posts (episode_id);
+create index if not exists posts_channel on public.posts (channel_id);
+create index if not exists themes_brand on public.themes (brand_id);
+create index if not exists moments_ws on public.moments (workspace_id);
+create index if not exists moments_episode on public.moments (episode_id);
+create index if not exists holds_ws on public.holds (workspace_id);
+create index if not exists holds_anchor on public.holds (anchor_id);
+create index if not exists time_anchors_ws on public.time_anchors (workspace_id);

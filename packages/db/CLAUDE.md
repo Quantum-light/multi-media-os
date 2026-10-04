@@ -10,4 +10,5 @@ Owns the database: migrations, generated types, typed queries.
 
 ## Files
 - `supabase/migrations/` the schema, in order
-- `tests/tenant_isolation.sql` proves one workspace can never see another
+- `tests/tenant_isolation.sql` proves one workspace can never see another (passed on the live project, 4 Oct 2026)
+- Live project: multi-media-os (ref rxweinpsmtgrostfoutn, eu-west-1). Membership helpers live in the `private` schema.
