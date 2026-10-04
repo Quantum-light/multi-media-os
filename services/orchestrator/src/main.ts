@@ -35,7 +35,7 @@ await runWorker(queue, [ingestHandler(store)], {
   onOutcome: (o) => {
     if (o.kind !== "idle") console.log(`[worker] ${o.step} ${o.jobId} ${o.kind}${"error" in o ? `: ${o.error}` : ""}`);
   },
-  onError: (e) => console.error("[worker] queue error", e),
+  onError: (e) => console.error(`[worker] queue error: ${e instanceof Error ? e.message : String(e)} (backing off)`),
 });
 await queue.close();
 console.log("[worker] stopped");
