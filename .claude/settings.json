@@ -1,0 +1,13 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash|Read|Write|Edit",
+        "hooks": [{ "type": "command", "command": "bash .claude/hooks/block-secrets.sh" }]
+      }
+    ]
+  },
+  "permissions": {
+    "deny": ["Read(./.env)", "Read(./.env.*)", "Read(**/.env)", "Read(**/.env.*)"]
+  }
+}

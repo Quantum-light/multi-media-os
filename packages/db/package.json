@@ -1,0 +1,6 @@
+{
+  "name": "@mmos/db",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Supabase migrations, generated types and typed queries. Every table starts here."
+}

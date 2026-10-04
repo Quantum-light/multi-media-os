@@ -1,0 +1,27 @@
+.rail { width: 248px; max-width: 100%; min-height: 640px; border-radius: 30px; padding: 32px 20px 24px; display: flex; flex-direction: column; gap: 28px; }
+
+.wordmark { display: flex; flex-direction: column; gap: 4px; padding: 0 8px; }
+.word { font-family: var(--font-title), Georgia, serif; font-size: 26px; line-height: 1; letter-spacing: -0.01em; }
+.os { font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold-ink); }
+
+.brand { display: flex; align-items: center; gap: 12px; padding: 0 8px; }
+.mark { flex: 0 0 36px; height: 36px; border-radius: 999px; background: #1a1030; color: #d8b85e; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 1px rgba(201, 162, 74, 0.55); }
+.brandText { display: flex; flex-direction: column; min-width: 0; }
+.brandName { font-size: 13px; font-weight: 500; }
+.brandMeta { font-size: 11px; color: var(--ink-quiet); }
+
+.rule { display: block; height: 1px; margin: 0 8px; background: linear-gradient(90deg, rgba(201, 162, 74, 0.7), rgba(201, 162, 74, 0)); }
+
+.group { display: flex; flex-direction: column; gap: 2px; }
+.groupLabel { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #8a909b; padding: 0 8px 6px; }
+
+.item, .itemCurrent { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 10px; text-decoration: none; }
+.item { color: #4c525e; }
+.item:hover { background: rgba(255, 255, 255, 0.45); }
+.itemCurrent { font-weight: 600; }
+.itemLabel { flex: 1; }
+
+.dot, .dotOn { width: 5px; height: 5px; border-radius: 999px; }
+.dotOn { background: var(--gold); box-shadow: 0 0 0 3px rgba(201, 162, 74, 0.18); }
+
+.badge { font-size: 11px; color: var(--gold-ink); }
