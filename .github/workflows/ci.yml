@@ -18,6 +18,8 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+      - name: ffmpeg (the media steps are tested on real encodes)
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
       - run: npm ci --include=dev
       - name: File size limits
         run: npm run check:size

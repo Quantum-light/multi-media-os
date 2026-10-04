@@ -12,6 +12,13 @@ checks the output, and saves it. The rules live in the database
 - Ordinary errors retry with backoff (30s, 60s, 120s … 30 min cap) up to three attempts.
   `NonRetryableError`, bad input and bad output fail at once.
 
-There is no `main` yet on purpose: the worker process ships with the first real
-step handler (nothing half-built on main). Adding one: the `add-pipeline-step` skill,
-then `defineHandler({ step, run })`.
+## Running
+`src/main.ts` is the worker process. It needs `DATABASE_URL` (Supabase direct connection) and the
+`R2_*` settings. In production it runs on Railway from `Dockerfile` (ffmpeg included); the root `railway.json`
+points Railway at it. Locally: `npm start` with those variables set.
+
+## Steps it runs today
+- **ingest** (`src/steps/ingest.ts`): reads the source once while hashing it, then makes mono 16 kHz
+  audio and a 540p preview in parallel. Tested end to end on generated 1080p video.
+
+Adding a step: the `add-pipeline-step` skill, then `defineHandler({ step, run })` and register it in `main.ts`.
