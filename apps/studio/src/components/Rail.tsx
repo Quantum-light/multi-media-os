@@ -9,7 +9,9 @@ type Group = { label?: string; items: Item[] };
 
 // Pages not built yet stay out of the rail (anti-clunk rule 9: nothing half-built on main).
 const GROUPS: Group[] = [
-  { items: [{ href: "/", label: "Today" }, { href: "/vision", label: "Vision and goals" }] },
+  { items: [{ href: "/", label: "Today" }] },
+  { label: "Plan", items: [{ href: "/calendar", label: "Calendar" }] },
+  { label: "Studio", items: [{ href: "/shows", label: "Brands and shows" }, { href: "/vision", label: "Vision and goals" }] },
 ];
 
 type Props = { workspaceName: string; mark: string; meta: string; userEmail: string };
