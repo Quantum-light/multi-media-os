@@ -142,6 +142,7 @@ export type Database = {
           chapters: Json
           created_at: string
           description: string | null
+          flags: string[]
           id: string
           number: number | null
           recorded_at: string | null
@@ -154,6 +155,7 @@ export type Database = {
           chapters?: Json
           created_at?: string
           description?: string | null
+          flags?: string[]
           id?: string
           number?: number | null
           recorded_at?: string | null
@@ -166,6 +168,7 @@ export type Database = {
           chapters?: Json
           created_at?: string
           description?: string | null
+          flags?: string[]
           id?: string
           number?: number | null
           recorded_at?: string | null

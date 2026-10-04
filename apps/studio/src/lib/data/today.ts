@@ -16,7 +16,7 @@ export async function getToday(now = new Date()): Promise<TodayData | null> {
 
   const [shows, episodes, posts, failed] = await Promise.all([
     supabase.from("shows").select("id, name, kind, theme, compass, show_channels(count)").eq("workspace_id", ws).order("created_at"),
-    supabase.from("episodes").select("id, title, state, show_id, created_at").eq("workspace_id", ws).neq("state", "published").order("created_at", { ascending: false }).limit(50),
+    supabase.from("episodes").select("id, title, state, show_id, created_at, flags").eq("workspace_id", ws).neq("state", "published").order("created_at", { ascending: false }).limit(50),
     supabase.from("posts").select("platform, scheduled_for, episodes(show_id)").eq("workspace_id", ws).in("status", ["scheduled", "waiting_review"]).gte("scheduled_for", now.toISOString()).lt("scheduled_for", weekAhead),
     supabase.from("jobs").select("id", { count: "exact", head: true }).eq("workspace_id", ws).eq("status", "failed").gte("created_at", weekAgo),
   ]);

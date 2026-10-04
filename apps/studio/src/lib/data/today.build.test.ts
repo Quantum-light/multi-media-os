@@ -34,8 +34,8 @@ describe("buildToday", () => {
     const rows: TodayRows = {
       ...base,
       episodes: [
-        { id: "e1", title: "What Is Time, Really?", state: "review", show_id: SHOW, created_at: "2026-10-01T00:00:00Z" },
-        { id: "e2", title: null, state: "processing", show_id: SHOW, created_at: "2026-10-03T00:00:00Z" },
+        { id: "e1", title: "What Is Time, Really?", state: "review", show_id: SHOW, created_at: "2026-10-01T00:00:00Z", flags: ["duplicate_of:e0"] },
+        { id: "e2", title: null, state: "processing", show_id: SHOW, created_at: "2026-10-03T00:00:00Z", flags: [] },
       ],
       jobs: [
         { episode_id: "e2", step: "transcribe", status: "succeeded", created_at: "2026-10-03T01:00:00Z", lease_until: null },
@@ -48,7 +48,7 @@ describe("buildToday", () => {
       ],
     };
     const t = buildToday(rows, now, "Asia/Makassar");
-    expect(t.forYou[0]).toMatchObject({ kind: "review", title: "What Is Time, Really?", ground: "#2A1D16" });
+    expect(t.forYou[0]).toMatchObject({ kind: "review", title: "What Is Time, Really?", ground: "#2A1D16", detail: "Human Time with GG · ready for review · looks like a recording you already have" });
     expect(t.inStudio[0]).toMatchObject({ name: "New Human Time with GG recording", stepLabel: "Cutting", stepIndex: 2, totalSteps: 11 });
     expect(t.week[2]).toEqual({ key: "2026-10-06", day: "Tue 6", items: "Human Time with GG on YouTube and Instagram" });
     expect(t.summary).toBe("1 episode is ready for you, 1 recording in the studio and 3 posts going out this week.");

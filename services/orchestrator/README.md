@@ -21,4 +21,10 @@ points Railway at it. Locally: `npm start` with those variables set.
 - **ingest** (`src/steps/ingest.ts`): reads the source once while hashing it, then makes mono 16 kHz
   audio and a 540p preview in parallel. Tested end to end on generated 1080p video.
 
+## Chaining
+The worker never decides what comes next. `private.complete_job` calls `private.advance_episode`,
+which records what ingest learned, enqueues the next automatic step with this step's output as its
+input, and hands the episode to Review after the last automatic step (`storyboard` for video,
+`write` for podcasts). A final failure marks the episode `failed`. See migrations 0008–0010.
+
 Adding a step: the `add-pipeline-step` skill, then `defineHandler({ step, run })` and register it in `main.ts`.

@@ -18,7 +18,7 @@ export type TodayData = {
 
 export type TodayRows = {
   shows: { id: string; name: string; kind: string; theme: unknown; compass: unknown; channels: number }[];
-  episodes: { id: string; title: string | null; state: string; show_id: string; created_at: string }[];
+  episodes: { id: string; title: string | null; state: string; show_id: string; created_at: string; flags: string[] }[];
   jobs: { episode_id: string; step: string; status: string; created_at: string; lease_until: string | null }[];
   posts: { platform: string; scheduled_for: string; show_id: string | null }[];
   failedJobsThisWeek: number;
@@ -37,7 +37,7 @@ export function buildToday(rows: TodayRows, now: Date, timeZone: string): TodayD
   const working = rows.episodes.filter((e) => !RESTING.has(e.state));
 
   const forYou: ForYouItem[] = [
-    ...ready.map((e) => ({ id: `review-${e.id}`, kind: "review" as const, title: episodeName(e), detail: `${showName(e.show_id)} · ready for review`, ground: groundOf(showById.get(e.show_id)?.theme) })),
+    ...ready.map((e) => ({ id: `review-${e.id}`, kind: "review" as const, title: episodeName(e), detail: `${showName(e.show_id)} · ready for review${flagNote(e.flags)}`, ground: groundOf(showById.get(e.show_id)?.theme) })),
     ...failed.map((e) => ({ id: `failed-${e.id}`, kind: "attention" as const, title: episodeName(e), detail: `${showName(e.show_id)} · stopped and needs a look`, ground: null })),
     ...rows.shows.filter((s) => s.compass === null).map((s) => ({ id: `vision-${s.id}`, kind: "setup" as const, title: `Write the vision for ${s.name}`, detail: "What it is, who it is for, and the one goal it builds towards", ground: null })),
     ...rows.shows.filter((s) => s.channels === 0).map((s) => ({ id: `channels-${s.id}`, kind: "setup" as const, title: `Connect where ${s.name} posts`, detail: "Choose the accounts this show publishes to", ground: null })),
@@ -98,6 +98,12 @@ function summarise(ready: number, working: number, posts: number, shows: number)
   if (parts.length === 0) return "A quiet day. Nothing is waiting for you and nothing is scheduled this week.";
   const sentence = listJoin(parts);
   return `${sentence.charAt(0).toUpperCase()}${sentence.slice(1)}.`;
+}
+
+/** Review flags, as a short aside: " · looks like a recording you already have". */
+function flagNote(flags: string[]): string {
+  if (flags.some((f) => f.startsWith("duplicate_of:"))) return " · looks like a recording you already have";
+  return "";
 }
 
 function groundOf(theme: unknown): string | null {
