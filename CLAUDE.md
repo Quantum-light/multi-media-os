@@ -11,7 +11,8 @@ The full build plan lives in the Claude Doc "multi-media-os — Build Plan". Thi
 | `packages/contracts` | Zod schemas for every step, job and document. The source of truth. Depends on nothing internal. |
 | `packages/brand` | Studio tokens, brand kits, motion tokens, the thread. |
 | `packages/db` | Supabase migrations, isolation tests, generated types. |
-| `services/*` | Orchestrator, media worker, render worker. Phase 2. |
+| `services/orchestrator` | The job engine's worker side: claims jobs from Postgres, runs the step's handler, saves the result. Handlers arrive with each step. |
+| `services/media-worker`, `services/render-worker` | Python media work and HyperFrames rendering. Not built yet. |
 | `evals/golden` | Real episodes with approved outputs, used as regression tests. |
 | `docs/decisions` | One short record per architecture decision. |
 | `specs` | The spec pack. Every change starts by editing a spec. |

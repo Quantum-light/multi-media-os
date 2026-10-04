@@ -2,6 +2,7 @@
  * Layer rules (anti-clunk rule 1): calls run downward only.
  *   apps  ->  packages
  *   packages  ->  other packages, never apps
+ *   services  ->  packages, never apps
  *   contracts  ->  nothing internal (it is the source of truth)
  */
 module.exports = {
@@ -19,6 +20,19 @@ module.exports = {
       to: { path: "^apps/" },
     },
     {
+      name: "services-never-import-apps",
+      severity: "error",
+      from: { path: "^services/" },
+      to: { path: "^apps/" },
+    },
+    {
+      name: "apps-never-import-services",
+      comment: "The Studio talks to services through the database, never by importing them.",
+      severity: "error",
+      from: { path: "^apps/" },
+      to: { path: "^services/" },
+    },
+    {
       name: "contracts-stay-pure",
       comment: "packages/contracts is the source of truth and depends on nothing internal.",
       severity: "error",
@@ -29,7 +43,7 @@ module.exports = {
       name: "no-deep-imports-across-packages",
       comment: "Import a package through its entry point, never its internals.",
       severity: "error",
-      from: { path: "^(apps|packages)/([^/]+)/" },
+      from: { path: "^(apps|packages|services)/([^/]+)/" },
       to: { path: "^packages/[^/]+/src/(?!index\\.ts$)", pathNot: "^packages/$2/" },
     },
   ],

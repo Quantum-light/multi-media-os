@@ -2,8 +2,14 @@
   "name": "multi-media-os",
   "private": true,
   "packageManager": "npm@10.9.0",
-  "engines": { "node": ">=22" },
-  "workspaces": ["apps/*", "packages/*"],
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "services/orchestrator"
+  ],
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -11,7 +17,7 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "check:size": "node scripts/check-file-size.mjs",
-    "check:deps": "depcruise apps packages --config .dependency-cruiser.cjs",
+    "check:deps": "depcruise apps packages services --config .dependency-cruiser.cjs",
     "check": "npm run check:size && npm run check:deps && npm run typecheck && npm run test"
   },
   "devDependencies": {

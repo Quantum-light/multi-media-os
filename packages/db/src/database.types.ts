@@ -321,9 +321,11 @@ export type Database = {
           episode_id: string
           error: string | null
           id: string
+          input: Json
           input_hash: string
           lease_until: string | null
           output: Json | null
+          run_after: string
           status: string
           step: string
           workspace_id: string
@@ -335,9 +337,11 @@ export type Database = {
           episode_id: string
           error?: string | null
           id?: string
+          input?: Json
           input_hash: string
           lease_until?: string | null
           output?: Json | null
+          run_after?: string
           status?: string
           step: string
           workspace_id: string
@@ -349,9 +353,11 @@ export type Database = {
           episode_id?: string
           error?: string | null
           id?: string
+          input?: Json
           input_hash?: string
           lease_until?: string | null
           output?: Json | null
+          run_after?: string
           status?: string
           step?: string
           workspace_id?: string
