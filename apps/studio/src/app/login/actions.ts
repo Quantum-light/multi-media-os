@@ -22,7 +22,7 @@ export async function sendLink(_prev: LinkState, form: FormData): Promise<LinkSt
   const next = safeNext(String(form.get("next") ?? "/"));
   const redirectTo = `${proto}://${host}/auth/callback${next === "/" ? "" : `?next=${encodeURIComponent(next)}`}`;
 
-  const supabase = await createClient();
+  const supabase = await createClient({ flowType: "implicit" });
   const { error } = await supabase.auth.signInWithOtp({ email: email.data, options: { emailRedirectTo: redirectTo } });
   if (error) {
     const tooMany = error.status === 429;

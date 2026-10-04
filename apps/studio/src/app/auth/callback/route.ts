@@ -13,6 +13,14 @@ export async function GET(request: NextRequest) {
   const type = url.searchParams.get("type");
   const next = safeNext(url.searchParams.get("next"));
 
+  // Links sent with the implicit flow carry the session in the URL fragment, which never
+  // reaches the server. Browsers keep the fragment across redirects, so the complete page reads it.
+  if (!code && !tokenHash) {
+    const to = new URL("/auth/complete", url.origin);
+    if (next !== "/") to.searchParams.set("next", next);
+    return NextResponse.redirect(to);
+  }
+
   const supabase = await createClient();
   let ok = false;
   if (code) {
