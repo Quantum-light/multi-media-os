@@ -32,6 +32,15 @@ export async function middleware(request: NextRequest) {
   const { data } = await supabase.auth.getUser();
   const path = request.nextUrl.pathname;
 
+  // If Supabase sends a sign-in link to the site root (its Site URL) instead of the callback,
+  // pass the one-time code on to the callback rather than losing it.
+  const code = request.nextUrl.searchParams.get("code");
+  if (!data.user && code && !path.startsWith("/auth/")) {
+    const to = request.nextUrl.clone();
+    to.pathname = "/auth/callback";
+    to.search = `?code=${encodeURIComponent(code)}`;
+    return NextResponse.redirect(to);
+  }
   if (!data.user && path.startsWith("/api/")) {
     return NextResponse.json({ code: "signed_out", message: "Sign in again." }, { status: 401 });
   }
