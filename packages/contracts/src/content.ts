@@ -30,6 +30,8 @@ export const Compass = z.object({
   mission: z.string().min(1),
   pillars: z.array(z.string().min(1)).min(1).max(6),
   howYouSeeIt: z.string().default(""),
+  /** True while the numbers are typed in by hand rather than read from evidence. */
+  isDraft: z.boolean().optional(),
   vision: z.string().min(1),
   mainGoal: z.object({
     statement: z.string().min(1),

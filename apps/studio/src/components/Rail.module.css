@@ -25,3 +25,8 @@
 .dotOn { background: var(--gold); box-shadow: 0 0 0 3px rgba(201, 162, 74, 0.18); }
 
 .badge { font-size: 11px; color: var(--gold-ink); }
+
+.footer { margin-top: auto; display: flex; flex-direction: column; gap: 4px; padding: 16px 8px 0; border-top: 1px solid var(--hairline); }
+.user { font-size: 11px; color: var(--ink-quiet); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.signOut { align-self: flex-start; padding: 0; border: 0; background: none; font: inherit; font-size: 12px; color: var(--gold-ink); cursor: pointer; }
+.signOut:hover { text-decoration: underline; }

@@ -60,6 +60,7 @@ a { color: inherit; }
 
 /* actions */
 .btn-gold { display: inline-block; padding: 11px 24px; border-radius: 999px; border: 0; background: var(--gold-gradient); color: var(--ink); font: inherit; font-weight: 600; letter-spacing: 0.02em; text-decoration: none; box-shadow: 0 8px 24px rgba(201, 162, 74, 0.28); cursor: pointer; }
+.btn-gold:disabled { opacity: 0.6; cursor: default; }
 .link-gold { font-weight: 600; text-decoration: underline; text-underline-offset: 6px; text-decoration-color: rgba(201, 162, 74, 0.7); }
 
 /* structure */
@@ -75,3 +76,7 @@ a { color: inherit; }
   .sheet { padding: 32px 24px; gap: 40px; }
   .stage { padding: 12px; gap: 12px; }
 }
+
+.chip { padding: 6px 14px; border-radius: 999px; font-size: 12px; text-decoration: none; color: var(--ink-soft); border: 1px solid rgba(46, 52, 66, 0.1); background: rgba(255, 255, 255, 0.4); }
+.chip:hover { background: rgba(255, 255, 255, 0.7); }
+.chip--on { color: var(--ink); border-color: var(--gold-hairline); background: rgba(201, 162, 74, 0.12); font-weight: 500; }

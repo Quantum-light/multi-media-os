@@ -2,5 +2,16 @@
   "name": "@mmos/db",
   "version": "0.1.0",
   "private": true,
-  "description": "Supabase migrations, generated types and typed queries. Every table starts here."
+  "type": "module",
+  "description": "Supabase migrations, generated types and typed queries. Every table starts here.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
 }

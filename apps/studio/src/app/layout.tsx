@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
-import { Rail } from "@/components/Rail";
 import "./globals.css";
 
 const title = Instrument_Serif({ subsets: ["latin"], weight: "400", style: ["normal", "italic"], variable: "--font-title" });
@@ -16,14 +15,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-GB" className={`${title.variable} ${figures.variable} ${body.variable}`}>
-      <body>
-        <div className="stage">
-          <div className="stage__rail">
-            <Rail />
-          </div>
-          <main className="sheet glass">{children}</main>
-        </div>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

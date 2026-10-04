@@ -1,12 +1,12 @@
 // Anti-clunk rule 2: no source file over 400 lines.
-// Migrations are exempt (they are reviewed as one change), everything else is not.
+// Migrations (reviewed as one change) and generated database types are exempt; everything else is not.
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
 
 const LIMIT = 400;
 const ROOTS = ["apps", "packages", "services", "scripts"];
 const EXTENSIONS = new Set([".ts", ".tsx", ".js", ".mjs", ".css", ".py"]);
-const SKIP = new Set(["node_modules", ".next", "dist", ".turbo", "migrations"]);
+const SKIP = new Set(["node_modules", ".next", "dist", ".turbo", "migrations", "database.types.ts"]);
 
 function* walk(dir) {
   for (const name of readdirSync(dir)) {

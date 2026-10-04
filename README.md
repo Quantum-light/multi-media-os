@@ -9,3 +9,6 @@ npm ci --include=dev
 npm run dev      # Studio on http://localhost:3200
 npm run check    # size, layers, types, tests
 ```
+
+## Signing in
+The Studio uses one-time email links (no passwords). In Supabase, under Authentication → URL Configuration, the redirect list must include `http://localhost:3200/auth/callback` and the deployed Studio's `/auth/callback`. People join a workspace by invite (`public.invites`); their membership is created the first time they sign in.

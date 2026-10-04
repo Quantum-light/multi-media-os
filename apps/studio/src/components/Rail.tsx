@@ -12,7 +12,9 @@ const GROUPS: Group[] = [
   { items: [{ href: "/", label: "Today" }, { href: "/vision", label: "Vision and goals" }] },
 ];
 
-export function Rail() {
+type Props = { workspaceName: string; mark: string; meta: string; userEmail: string };
+
+export function Rail({ workspaceName, mark, meta, userEmail }: Props) {
   const pathname = usePathname();
   return (
     <nav aria-label="Studio" className={`${styles.rail} glass`}>
@@ -22,10 +24,10 @@ export function Rail() {
       </div>
 
       <div className={styles.brand}>
-        <span className={styles.mark} aria-hidden="true">QLS</span>
+        <span className={styles.mark} aria-hidden="true">{mark}</span>
         <span className={styles.brandText}>
-          <span className={styles.brandName}>Quantum Light Science</span>
-          <span className={styles.brandMeta}>2 shows</span>
+          <span className={styles.brandName}>{workspaceName}</span>
+          <span className={styles.brandMeta}>{meta}</span>
         </span>
       </div>
 
@@ -46,6 +48,11 @@ export function Rail() {
           })}
         </div>
       ))}
+
+      <form action="/auth/signout" method="post" className={styles.footer}>
+        <span className={styles.user} title={userEmail}>{userEmail}</span>
+        <button type="submit" className={styles.signOut}>Sign out</button>
+      </form>
     </nav>
   );
 }

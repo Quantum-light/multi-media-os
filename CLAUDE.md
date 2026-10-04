@@ -7,7 +7,7 @@ The full build plan lives in the Claude Doc "multi-media-os — Build Plan". Thi
 ## Layout
 | Folder | Owns |
 | --- | --- |
-| `apps/studio` | The one interface (Next.js 15, React 19, plain CSS). Data only through `src/lib/data.ts`, one call per screen. |
+| `apps/studio` | The one interface (Next.js 15, React 19, plain CSS). Data only through `src/lib/data.ts`, one call per screen; it reads as the signed-in person so row-level security decides what they see. Pure shaping lives in `*.build.ts` files with tests. |
 | `packages/contracts` | Zod schemas for every step, job and document. The source of truth. Depends on nothing internal. |
 | `packages/brand` | Studio tokens, brand kits, motion tokens, the thread. |
 | `packages/db` | Supabase migrations, isolation tests, generated types. |
