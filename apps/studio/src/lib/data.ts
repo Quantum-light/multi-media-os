@@ -7,4 +7,5 @@ export { getShell, type Shell } from "./data/shell";
 export { getToday, type TodayData } from "./data/today";
 export { getCalendar, type CalendarData } from "./data/calendar";
 export { getShows, type ShowsData } from "./data/shows";
+export { getUploadTargets, type UploadTargets } from "./data/upload";
 export { getVision, type VisionData, type VisionShow } from "./data/vision";

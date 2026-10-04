@@ -777,7 +777,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      start_ingest: { Args: { p_episode: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never

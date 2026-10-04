@@ -1,0 +1,19 @@
+{
+  "name": "@mmos/media",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Pure media helpers shared by the Studio and workers: upload planning, storage keys, fingerprints, the parallel uploader.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2",
+    "vitest": "^3.1.0"
+  }
+}

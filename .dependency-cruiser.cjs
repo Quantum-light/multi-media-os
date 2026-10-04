@@ -8,6 +8,13 @@
 module.exports = {
   forbidden: [
     {
+      name: "no-unresolvable",
+      comment: "Every import must resolve, otherwise the rules below cannot see it.",
+      severity: "error",
+      from: {},
+      to: { couldNotResolve: true },
+    },
+    {
       name: "no-circular",
       severity: "error",
       from: {},
@@ -33,6 +40,13 @@ module.exports = {
       to: { path: "^services/" },
     },
     {
+      name: "supabase-stays-behind-its-seam",
+      comment: "Decision 0003: Supabase client code lives only in the Studio's supabase adapter, middleware and auth callback.",
+      severity: "error",
+      from: { pathNot: "^apps/studio/src/(lib/supabase/|middleware\\.ts$|app/auth/)" },
+      to: { path: "node_modules/@supabase/" },
+    },
+    {
       name: "contracts-stay-pure",
       comment: "packages/contracts is the source of truth and depends on nothing internal.",
       severity: "error",
@@ -49,7 +63,9 @@ module.exports = {
   ],
   options: {
     doNotFollow: { path: "node_modules" },
-    exclude: { path: "(node_modules|\\.next|dist)" },
-    tsConfig: { fileName: "tsconfig.base.json" },
+    // node_modules stays visible (not followed) so rules about outside packages can fire.
+    exclude: { path: "(^|/)\\.next/" },
+    // Resolves the Studio's "@/" alias; extends the base config used everywhere else.
+    tsConfig: { fileName: "tsconfig.depcruise.json" },
   },
 };

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getShell, getToday } from "@/lib/data";
 import { StepThread } from "@/components/StepThread";
 
@@ -7,13 +8,16 @@ export default async function TodayPage() {
 
   return (
     <>
-      <header style={{ display: "flex", flexDirection: "column", gap: 14, maxWidth: 720 }}>
+      <header style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", gap: 24 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14, maxWidth: 720 }}>
         <span className="eyebrow">{data.dateLabel}</span>
         <h1 className="display">
           {data.greeting}
           {shell.firstName ? <>, <em>{shell.firstName}</em></> : null}
         </h1>
         <p className="lead">{data.summary}</p>
+        </div>
+        <Link href="/upload" className="btn-gold">Upload a recording</Link>
       </header>
 
       <section aria-labelledby="for-you">

@@ -1,0 +1,10 @@
+{
+  "//": "Used only by the layer rules (dependency-cruiser) so it can resolve the Studio's @/ alias.",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": { "@/*": ["apps/studio/src/*"] },
+    "noEmit": true
+  },
+  "include": ["apps/*/src", "packages/*/src", "services/*/src"]
+}

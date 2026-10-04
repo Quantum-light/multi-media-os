@@ -1,0 +1,21 @@
+.panel { border-radius: var(--radius); padding: 32px; display: flex; flex-direction: column; gap: 24px; max-width: 760px; }
+.field { display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
+.select { font: inherit; color: var(--ink); padding: 11px 14px; border-radius: 14px; border: 1px solid rgba(46, 52, 66, 0.12); background: rgba(255, 255, 255, 0.7); }
+.drop {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center;
+  min-height: 180px; padding: 24px; border-radius: 22px; cursor: pointer;
+  border: 1.5px dashed var(--gold-hairline); background: rgba(255, 255, 255, 0.35);
+  transition: background 160ms ease, border-color 160ms ease;
+}
+.drop:hover, .dropOn { background: rgba(201, 162, 74, 0.08); border-color: var(--gold); }
+.drop:focus-within { outline: 1.5px solid var(--gold); outline-offset: 3px; }
+.hidden { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.fileName { font-family: var(--font-title), Georgia, serif; font-size: 24px; line-height: 1.2; word-break: break-word; }
+.progress { display: flex; flex-direction: column; gap: 10px; }
+.bar { height: 3px; background: rgba(46, 52, 66, 0.1); border-radius: 999px; overflow: hidden; }
+.bar > span { display: block; height: 100%; background: var(--gold-gradient); transition: width 300ms ease; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: baseline; font-size: 13px; }
+.cancel { margin-left: auto; padding: 0; border: 0; background: none; font: inherit; font-size: 13px; color: var(--gold-ink); cursor: pointer; }
+.notice { display: flex; flex-direction: column; gap: 14px; padding: 18px 20px; border-radius: 16px; background: rgba(201, 162, 74, 0.1); }
+.actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.error { margin: 0; font-size: 13px; color: #8a5a1c; }

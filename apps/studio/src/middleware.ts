@@ -32,6 +32,9 @@ export async function middleware(request: NextRequest) {
   const { data } = await supabase.auth.getUser();
   const path = request.nextUrl.pathname;
 
+  if (!data.user && path.startsWith("/api/")) {
+    return NextResponse.json({ code: "signed_out", message: "Sign in again." }, { status: 401 });
+  }
   if (!data.user && !isPublic(path)) {
     const to = request.nextUrl.clone();
     to.pathname = "/login";

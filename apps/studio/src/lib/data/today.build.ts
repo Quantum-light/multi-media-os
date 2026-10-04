@@ -46,7 +46,7 @@ export function buildToday(rows: TodayRows, now: Date, timeZone: string): TodayD
   const inStudio: StudioJob[] = working.map((e) => {
     const show = showById.get(e.show_id);
     const kind = show && isShowKind(show.kind) ? show.kind : "video";
-    const p = progressOf(kind, rows.jobs.filter((j) => j.episode_id === e.id));
+    const p = e.state === "uploading" ? { index: 0, total: progressOf(kind, []).total, label: "Uploading" } : progressOf(kind, rows.jobs.filter((j) => j.episode_id === e.id));
     return { id: e.id, name: episodeName(e), show: show?.name ?? "A show", stepLabel: p.label, stepIndex: p.index, totalSteps: p.total };
   });
 
