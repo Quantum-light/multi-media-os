@@ -18,7 +18,8 @@
     "test": "turbo run test",
     "check:size": "node scripts/check-file-size.mjs",
     "check:deps": "depcruise apps packages services --config .dependency-cruiser.cjs",
-    "check": "npm run check:size && npm run check:deps && npm run typecheck && npm run test"
+    "check": "npm run check:size && npm run check:deps && npm run typecheck && npm run test",
+    "check:e2e": "tsx services/orchestrator/scripts/check-e2e.ts"
   },
   "devDependencies": {
     "dependency-cruiser": "^16.10.0",
