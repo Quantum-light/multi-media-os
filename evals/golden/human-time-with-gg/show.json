@@ -1,0 +1,21 @@
+{
+  "showName": "Human Time with GG",
+  "brandName": "Quantum Light Science",
+  "compass": {
+    "whatItIs": "The human, behind-the-scenes side of Quantum Light Science, on YouTube.",
+    "mission": "Help everyday people understand time, and use it to live fuller lives.",
+    "howYouSeeIt": "Everyday science, but regal enough. Human first.",
+    "pillars": [
+      "Personal growth and time",
+      "Quantum science and spirituality",
+      "Business and entrepreneurship",
+      "Relationships and family"
+    ]
+  },
+  "voiceKit": null,
+  "platforms": [
+    "youtube",
+    "instagram",
+    "threads"
+  ]
+}

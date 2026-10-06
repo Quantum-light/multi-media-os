@@ -20,6 +20,17 @@ points Railway at it. Locally: `npm start` with those variables set.
 ## Steps it runs today
 - **ingest** (`src/steps/ingest.ts`): reads the source once while hashing it, then makes mono 16 kHz
   audio and a 540p preview in parallel. Tested end to end on generated 1080p video.
+- **transcribe** (`src/steps/transcribe.ts`, needs `ASSEMBLYAI_API_KEY`): AssemblyAI reads the audio through a
+  six-hour signed link; the transcript document goes to storage.
+- **cut** (`src/steps/cut.ts`, `src/edit/cut-plan.ts`): a deterministic cut list from word timings.
+- **understand** and **write** (`src/steps/agents.ts`, needs `ANTHROPIC_API_KEY`): the prompts live in `@mmos/agents`.
+- **clip** and **storyboard** (`src/steps/shorts.ts`, `src/edit/shorts-plan.ts`): video shows only, no paid calls.
+- **publish** (`src/steps/publish.ts`): built and tested against `FakePublisher`; not registered until M6.
+  The live Zernio client only runs for episodes in `PUBLISH_LIVE_EPISODES`.
+
+A step whose key is missing is not offered, so its jobs wait; the start-up log names the missing setting.
+Handlers read older results and the show's context through `EpisodeReader` (`src/episode.ts`).
+Golden scoring: `scripts/eval-golden.ts` (see `evals/golden/README.md`).
 
 ## Chaining
 The worker never decides what comes next. `private.complete_job` calls `private.advance_episode`,

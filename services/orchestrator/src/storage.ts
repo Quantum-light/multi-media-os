@@ -1,16 +1,22 @@
 import { createHash } from "node:crypto";
 import { createReadStream, createWriteStream } from "node:fs";
-import { copyFile, mkdir, stat } from "node:fs/promises";
+import { copyFile, mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { Readable, Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 /** What workers need from object storage: read a file once (hashing as it streams), write results. */
 export type WorkerStore = {
   download(key: string, dest: string, signal?: AbortSignal): Promise<{ sha256: string; bytes: number }>;
   upload(key: string, src: string, contentType: string, signal?: AbortSignal): Promise<void>;
+  /** Small documents (transcripts, cut lists). */
+  readText(key: string, signal?: AbortSignal): Promise<string>;
+  writeText(key: string, body: string, contentType: string, signal?: AbortSignal): Promise<void>;
+  /** A short-lived read link, so an outside service fetches one file without ever holding our keys. */
+  signedGetUrl(key: string, seconds: number): Promise<string>;
 };
 
 /** Hashes bytes as they pass, so the checksum costs no second read of a multi-gigabyte file. */
@@ -58,6 +64,17 @@ export function r2WorkerStore(env: NodeJS.ProcessEnv = process.env): WorkerStore
       signal?.addEventListener("abort", () => void upload.abort(), { once: true });
       await upload.done();
     },
+    async readText(key, signal) {
+      const out = await s3.send(new GetObjectCommand({ Bucket, Key: key }), signal ? { abortSignal: signal } : {});
+      if (!out.Body) throw new Error(`Storage returned no body for ${key}`);
+      return out.Body.transformToString("utf-8");
+    },
+    async writeText(key, body, contentType, signal) {
+      await s3.send(new PutObjectCommand({ Bucket, Key: key, Body: body, ContentType: contentType }), signal ? { abortSignal: signal } : {});
+    },
+    signedGetUrl(key, seconds) {
+      return getSignedUrl(s3, new GetObjectCommand({ Bucket, Key: key }), { expiresIn: seconds });
+    },
   };
 }
 
@@ -77,6 +94,16 @@ export function folderStore(root: string): WorkerStore & { path(key: string): st
       await mkdir(dirname(path(key)), { recursive: true });
       await copyFile(src, path(key));
       await stat(path(key));
+    },
+    readText(key) {
+      return readFile(path(key), "utf-8");
+    },
+    async writeText(key, body) {
+      await mkdir(dirname(path(key)), { recursive: true });
+      await writeFile(path(key), body, "utf-8");
+    },
+    async signedGetUrl(key) {
+      return `file://${path(key)}`;
     },
   };
 }

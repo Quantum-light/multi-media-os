@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const ShowKind = z.enum(["podcast", "video", "both"]);
 export const Platform = z.enum(["youtube", "youtube_shorts", "instagram", "tiktok", "threads", "x", "linkedin", "podcast", "newsletter", "website"]);
+export type Platform = z.infer<typeof Platform>;
 
 export const Post = z.object({
   id: z.string().uuid(),
