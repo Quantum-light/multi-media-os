@@ -1,0 +1,37 @@
+.block { display: flex; flex-direction: column; gap: 20px; }
+.field { display: flex; flex-direction: column; gap: 7px; }
+
+.input, .textarea {
+  font: inherit; color: var(--ink); width: 100%;
+  padding: 11px 14px; border-radius: 12px;
+  border: 1px solid rgba(46, 52, 66, 0.12); background: rgba(255, 255, 255, 0.72);
+}
+.textarea { resize: vertical; line-height: 1.5; }
+.input:focus-visible, .textarea:focus-visible { outline: 1.5px solid var(--gold); outline-offset: 2px; }
+.input::placeholder, .textarea::placeholder { color: #9aa0ab; }
+
+.pillars { display: flex; flex-direction: column; gap: 10px; }
+.pillarRow { display: flex; align-items: center; gap: 12px; }
+
+.objective {
+  display: flex; flex-direction: column; gap: 16px;
+  margin: 0; padding: 22px 24px; border-radius: 18px;
+  border: 1px solid var(--hairline); background: rgba(255, 255, 255, 0.32);
+}
+.legend { padding: 0 8px; font-size: 13px; font-weight: 500; }
+.kpi {
+  display: flex; flex-direction: column; gap: 12px;
+  padding-top: 16px; border-top: 1px solid var(--hairline);
+}
+.numbers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; max-width: 420px; }
+
+.remove { padding: 0; border: 0; background: none; font: inherit; font-size: 12px; color: var(--ink-quiet); cursor: pointer; align-self: flex-start; }
+.remove:hover { color: var(--gold-ink); }
+
+.problems { display: flex; flex-direction: column; gap: 10px; padding: 18px 20px; border-radius: 16px; background: rgba(201, 162, 74, 0.12); font-size: 14px; }
+.actions { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+
+@media (max-width: 560px) {
+  .numbers { grid-template-columns: 1fr 1fr; }
+  .objective { padding: 18px 16px; }
+}

@@ -4,21 +4,31 @@ import { getVision } from "@/lib/data";
 import { overallProgress } from "@/lib/format";
 import { Objective } from "@/components/Objective";
 import { Note } from "@/components/Note";
+import { VisionEditor } from "./VisionEditor";
 
 export const metadata = { title: "Vision and goals · multi-media os" };
 
-type Props = { searchParams: Promise<{ show?: string }> };
+type Props = { searchParams: Promise<{ show?: string; edit?: string }> };
 
 export default async function VisionPage({ searchParams }: Props) {
-  const { show } = await searchParams;
+  const { show, edit } = await searchParams;
   const data = await getVision(show);
   if (!data) {
     return <Intro eyebrow="Vision and goals" lead="Add a show first. Each show gets its own vision, pillars and goal." />;
   }
 
+  if (edit === "1") {
+    return <VisionEditor slug={data.current.slug} showName={data.current.name} compass={data.state.kind === "ready" ? data.state.compass : null} />;
+  }
+
+  const editHref = `/vision?show=${data.current.slug}&edit=1`;
+
   return (
     <>
-      <Intro eyebrow={data.current.name} lead="Get clear on what this show is for, then let everything you make build towards it. Every number names where it comes from." />
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", gap: 24 }}>
+        <Intro eyebrow={data.current.name} lead="Get clear on what this show is for, then let everything you make build towards it. Every number names where it comes from." />
+        {data.state.kind === "ready" ? <Link href={editHref} className="link-gold">Edit</Link> : null}
+      </div>
 
       {data.shows.length > 1 ? (
         <nav aria-label="Shows" style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: -24 }}>
@@ -31,9 +41,17 @@ export default async function VisionPage({ searchParams }: Props) {
       ) : null}
 
       {data.state.kind === "missing" ? (
-        <p className="lead">No vision written for {data.current.name} yet. It needs what the show is, its mission, its pillars and one main goal with three objectives.</p>
+        <Empty
+          lead={`No vision written for ${data.current.name} yet. It needs what the show is, its mission, its pillars, and one main goal with three objectives.`}
+          href={editHref}
+          cta="Write the vision"
+        />
       ) : data.state.kind === "invalid" ? (
-        <p className="lead">The vision saved for {data.current.name} is incomplete ({data.state.problems} {data.state.problems === 1 ? "problem" : "problems"}), so it is not shown.</p>
+        <Empty
+          lead={`The vision saved for ${data.current.name} is incomplete, so it is not shown here. Writing it again is the quickest way through.`}
+          href={editHref}
+          cta="Write it again"
+        />
       ) : (
         <CompassView compass={data.state.compass} />
       )}
@@ -48,6 +66,15 @@ function Intro({ eyebrow, lead }: { eyebrow: string; lead: string }) {
       <h1 className="display">Vision and goals</h1>
       <p className="lead">{lead}</p>
     </header>
+  );
+}
+
+function Empty({ lead, href, cta }: { lead: string; href: string; cta: string }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24, alignItems: "flex-start" }}>
+      <p className="lead">{lead}</p>
+      <Link href={href} className="btn-gold">{cta}</Link>
+    </div>
   );
 }
 
