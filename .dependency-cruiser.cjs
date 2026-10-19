@@ -64,7 +64,10 @@ module.exports = {
   options: {
     doNotFollow: { path: "node_modules" },
     // node_modules stays visible (not followed) so rules about outside packages can fire.
-    exclude: { path: "(^|/)\\.next/" },
+    // services/clip-engine is a separate project with its own package.json, lockfile
+    // and node_modules, so the monorepo's layer rules and resolver do not apply to it.
+    // Delete it from this list if it ever becomes a workspace package.
+    exclude: { path: "(^|/)\\.next/|^services/clip-engine/" },
     // Resolves the Studio's "@/" alias; extends the base config used everywhere else.
     tsConfig: { fileName: "tsconfig.depcruise.json" },
   },

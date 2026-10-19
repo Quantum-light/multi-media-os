@@ -4,19 +4,22 @@
  * simply runs out and another worker picks it up.
  */
 import { hostname } from "node:os";
+import { databaseConnection } from "./db/connect";
 import { PgQueue } from "./pg-queue";
 import { runWorker } from "./runner";
 import { r2WorkerStore } from "./storage";
 import { ingestHandler } from "./steps/ingest";
 
-const databaseUrl = process.env.DATABASE_URL;
-if (!databaseUrl) {
-  console.error("DATABASE_URL is missing. Set it in Railway (the Supabase direct connection string).");
+const connection = databaseConnection(process.env);
+if ("error" in connection) {
+  console.error(`[worker] ${connection.error}`);
   process.exit(1);
 }
+for (const warning of connection.warnings) console.warn(`[worker] ${warning}`);
+console.log(`[worker] database: ${connection.describe}`);
 
 const workerId = process.env.WORKER_ID ?? `${hostname()}-${process.pid}`;
-const queue = PgQueue.connect(databaseUrl);
+const queue = PgQueue.connect(connection.url);
 const store = r2WorkerStore();
 const stop = new AbortController();
 
