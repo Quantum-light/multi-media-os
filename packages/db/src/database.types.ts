@@ -677,6 +677,69 @@ export type Database = {
           },
         ]
       }
+      styles: {
+        Row: {
+          archived_at: string | null
+          brand_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          name: string
+          never_do: string[]
+          prompt: string
+          recipe: Json
+          slug: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          brand_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          name: string
+          never_do?: string[]
+          prompt?: string
+          recipe?: Json
+          slug: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          brand_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          name?: string
+          never_do?: string[]
+          prompt?: string
+          recipe?: Json
+          slug?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "styles_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styles_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       themes: {
         Row: {
           brand_id: string | null

@@ -20,3 +20,8 @@ Owns the database: migrations, generated types, typed queries.
 - Chain order lives in `private.step_sequence(kind)`; the automatic steps in `private.is_auto_step`. Change those, and nothing else, to change the pipeline order.
 - A `drop policy` cannot be applied through the tooling without a person at the console; `alter policy … (false)` was used in 0010 instead.
 - Pending: `0004_time_anchor_policies.sql` is written but not yet applied (it drops a policy, so it waits for a person to approve).
+- `0011_styles.sql` adds `public.styles` for Style Studio: a saved, reusable look (slug unique per workspace, `kind` constrained, `recipe` validated by `StyleDoc`/`StyleRecipe`, retired with `archived_at` rather than deleted). Applied live 9 Oct 2026; `tests/styles.sql` passed against it the same day.
+- `private.touch_updated_at()` uses `clock_timestamp()`, not `now()`: `now()` is frozen at transaction start, so two edits in one transaction would record the same `updated_at` and the test for it could never fail honestly.
+- `rls_auto_enable()` had `execute` revoked from `public`, `anon` and `authenticated` on 7 Oct 2026 — it was reachable from the public REST API. `start_ingest` stays callable by signed-in users, which is intended.
+- Still open: `time_anchors_write` is `for all`, so it is evaluated on reads too. Splitting it needs a `drop policy`, so it waits for a person at the console.
+

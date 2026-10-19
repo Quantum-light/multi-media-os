@@ -1,38 +1,82 @@
 import Link from "next/link";
-import { getShows } from "@/lib/data";
+import { getShows, getStudioSetup } from "@/lib/data";
+import { BrandForm } from "./BrandForm";
+import { ChannelForm } from "./ChannelForm";
+import { ShowForm } from "./ShowForm";
 import styles from "./shows.module.css";
 
 export const metadata = { title: "Brands and shows · multi-media os" };
 
-export default async function ShowsPage() {
+type Props = { searchParams: Promise<{ add?: string; brand?: string; editBrand?: string; editShow?: string }> };
+
+export default async function ShowsPage({ searchParams }: Props) {
+  const { add, brand, editBrand, editShow } = await searchParams;
+
+  if (add === "channel") return <ChannelForm />;
+
+  if (add === "brand" || editBrand !== undefined) {
+    const setup = await getStudioSetup(editBrand === undefined ? {} : { brand: editBrand });
+    if (!setup) return null;
+    return <BrandForm brand={setup.brand} />;
+  }
+
+  if (add === "show" || editShow !== undefined) {
+    const asked = editShow === undefined ? {} : { show: editShow };
+    const setup = await getStudioSetup(asked);
+    if (!setup) return null;
+    return (
+      <ShowForm
+        show={setup.show}
+        brands={setup.brands}
+        channels={setup.channels}
+        brandSlug={brand ?? setup.show?.brandSlug ?? ""}
+        timeZone={setup.timeZone}
+      />
+    );
+  }
+
   const data = await getShows();
   if (!data) return null;
 
   return (
     <>
-      <header style={{ display: "flex", flexDirection: "column", gap: 14, maxWidth: 760 }}>
-        <span className="eyebrow">Your studio</span>
-        <h1 className="display">Brands and <em>shows</em></h1>
-        <p className="lead">Each brand holds its own style. Each show has its own look, rhythm and channels, and one account can carry several shows.</p>
-      </header>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", gap: 24 }}>
+        <header style={{ display: "flex", flexDirection: "column", gap: 14, maxWidth: 760 }}>
+          <span className="eyebrow">Your studio</span>
+          <h1 className="display">Brands and <em>shows</em></h1>
+          <p className="lead">Each brand holds its own style. Each show has its own look, rhythm and channels, and one account can carry several shows.</p>
+        </header>
+        <Link href="/shows?add=show" className="btn-gold">Add a show</Link>
+      </div>
 
-      {data.brands.length === 0 ? <p className="lead">No brands yet.</p> : null}
+      <nav aria-label="Add" style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: -24 }}>
+        <Link href="/shows?add=brand" className="link-gold">Add a brand</Link>
+        <Link href="/shows?add=channel" className="link-gold">Add a channel</Link>
+      </nav>
 
-      {data.brands.map((brand) => (
-        <section key={brand.slug} aria-labelledby={`brand-${brand.slug}`} style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {data.brands.length === 0 ? (
+        <p className="lead">No brands yet. A brand comes first: it holds the fonts, colours and voice every show under it inherits.</p>
+      ) : null}
+
+      {data.brands.map((brandBlock) => (
+        <section key={brandBlock.slug} aria-labelledby={`brand-${brandBlock.slug}`} style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           <div className="section-head" style={{ flexWrap: "wrap", gap: 12 }}>
-            <h2 id={`brand-${brand.slug}`} className="heading">{brand.name}</h2>
-            {brand.fonts ? <span className="quiet">Set in {brand.fonts}</span> : null}
+            <h2 id={`brand-${brandBlock.slug}`} className="heading">{brandBlock.name}</h2>
+            <span style={{ display: "flex", gap: 16, alignItems: "baseline" }}>
+              {brandBlock.fonts ? <span className="quiet">Set in {brandBlock.fonts}</span> : null}
+              <Link href={`/brand?brand=${brandBlock.slug}`} className="link-gold">Style</Link>
+              <Link href={`/shows?editBrand=${brandBlock.slug}`} className="link-gold">Rename</Link>
+            </span>
           </div>
-          {brand.story || brand.styleWords.length > 0 ? (
+          {brandBlock.story || brandBlock.styleWords.length > 0 ? (
             <p style={{ margin: 0, maxWidth: 680 }}>
-              {brand.story}
-              {brand.styleWords.length > 0 ? <span className="quiet"> {brand.styleWords.join(" · ")}</span> : null}
+              {brandBlock.story}
+              {brandBlock.styleWords.length > 0 ? <span className="quiet"> {brandBlock.styleWords.join(" · ")}</span> : null}
             </p>
           ) : null}
 
           <div className={styles.grid}>
-            {brand.shows.map((show) => (
+            {brandBlock.shows.map((show) => (
               <article key={show.slug} className={`${styles.card} glass`}>
                 <div className={styles.cardHead}>
                   <span
@@ -66,9 +110,15 @@ export default async function ShowsPage() {
                     ))
                   )}
                 </div>
+
+                <Link href={`/shows?editShow=${show.slug}`} className="link-gold" style={{ alignSelf: "flex-start" }}>Edit this show</Link>
               </article>
             ))}
-            {brand.shows.length === 0 ? <p className="quiet">No shows under this brand yet.</p> : null}
+            {brandBlock.shows.length === 0 ? (
+              <p className="quiet">
+                No shows under this brand yet. <Link href={`/shows?add=show&brand=${brandBlock.slug}`} className="link-gold">Add one</Link>.
+              </p>
+            ) : null}
           </div>
         </section>
       ))}
@@ -78,7 +128,11 @@ export default async function ShowsPage() {
           <h2 id="channels" className="heading">Channels</h2>
           <span className="figure" style={{ fontSize: 12, color: "var(--gold-ink)" }}>{String(data.channels.length).padStart(2, "0")}</span>
         </div>
-        {data.channels.length === 0 ? <p className="quiet" style={{ paddingTop: 16, margin: 0 }}>No channels connected yet.</p> : null}
+        {data.channels.length === 0 ? (
+          <p className="quiet" style={{ paddingTop: 16, margin: 0 }}>
+            No channels yet. <Link href="/shows?add=channel" className="link-gold">Add one</Link>.
+          </p>
+        ) : null}
         {data.channels.map((c) => (
           <div key={c.id} className="row">
             <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: 999, background: c.connected ? "var(--good)" : "var(--gold)" }} />
