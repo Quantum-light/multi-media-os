@@ -1,6 +1,6 @@
--- 0011 agent outputs: what transcribe, understand and write produce, saved where the Studio
+-- 0012 agent outputs: what transcribe, understand and write produce, saved where the Studio
 -- can read it, in the same transaction as the job's success (via private.advance_episode).
--- People read all of it; nobody writes these tables directly. Edits to drafts arrive in 0012
+-- People read all of it; nobody writes these tables directly. Edits to drafts arrive in 0013
 -- through one definer function that keeps every version.
 
 create table public.transcripts (

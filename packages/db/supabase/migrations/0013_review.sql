@@ -1,4 +1,4 @@
--- 0012 Review, the one gate: people edit drafts (every change a version, every change a
+-- 0013 Review, the one gate: people edit drafts (every change a version, every change a
 -- lesson for the voice kit), see where each post will go and when, and approve once.
 -- Three definer functions are the only doors; the tables stay read-only to people.
 

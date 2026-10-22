@@ -1,4 +1,4 @@
--- Agent outputs test (0011): transcribe, understand and write record what they made, in the
+-- Agent outputs test (0012): transcribe, understand and write record what they made, in the
 -- same transaction as the job; a redraft never overwrites a person's edit; people of another
 -- workspace see none of it and nobody writes these tables directly. Always rolls back.
 begin;

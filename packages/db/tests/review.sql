@@ -1,4 +1,4 @@
--- Review test (0012): editors save drafts as versions and teach the voice kit; viewers cannot;
+-- Review test (0013): editors save drafts as versions and teach the voice kit; viewers cannot;
 -- the plan finds the next free slot per channel; only owners and approvers approve, once.
 -- Always rolls back.
 begin;
