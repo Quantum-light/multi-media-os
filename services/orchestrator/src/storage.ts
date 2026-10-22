@@ -6,6 +6,7 @@ import { Readable, Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
+import { readR2Settings } from "@mmos/media";
 
 /** What workers need from object storage: read a file once (hashing as it streams), write results. */
 export type WorkerStore = {
@@ -26,17 +27,17 @@ function hashing(hash: ReturnType<typeof createHash>, counter: { bytes: number }
 
 /** Cloudflare R2 (any S3-compatible store). Uploads go in parallel parts. */
 export function r2WorkerStore(env: NodeJS.ProcessEnv = process.env): WorkerStore {
-  const { R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET } = env;
-  if (!R2_ACCOUNT_ID || !R2_ACCESS_KEY_ID || !R2_SECRET_ACCESS_KEY || !R2_BUCKET) throw new Error("R2 settings are missing (R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET)");
-  const jurisdiction = env.R2_JURISDICTION === "eu" ? ".eu" : "";
+  const read = readR2Settings(env);
+  if (!read.ok) throw new Error(`${read.problem} (in Railway)`);
+  const { endpoint, accessKeyId, secretAccessKey, bucket } = read.settings;
   const s3 = new S3Client({
     region: "auto",
-    endpoint: `https://${R2_ACCOUNT_ID}${jurisdiction}.r2.cloudflarestorage.com`,
-    credentials: { accessKeyId: R2_ACCESS_KEY_ID, secretAccessKey: R2_SECRET_ACCESS_KEY },
+    endpoint,
+    credentials: { accessKeyId, secretAccessKey },
     requestChecksumCalculation: "WHEN_REQUIRED",
     responseChecksumValidation: "WHEN_REQUIRED",
   });
-  const Bucket = R2_BUCKET;
+  const Bucket = bucket;
 
   return {
     async download(key, dest, signal) {

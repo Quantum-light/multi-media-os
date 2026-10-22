@@ -8,7 +8,7 @@ import {
   UploadPartCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import type { CompletedPart } from "@mmos/media";
+import { readR2Settings, type CompletedPart } from "@mmos/media";
 
 /** What the upload service needs from object storage. R2 today; any S3-compatible store works. */
 export type ObjectStore = {
@@ -24,13 +24,15 @@ const SIGNED_URL_SECONDS = 60 * 60;
 
 /** Server-only settings. Never NEXT_PUBLIC: these keys can write to storage. */
 function r2Env() {
-  const accountId = process.env.R2_ACCOUNT_ID;
-  const accessKeyId = process.env.R2_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
-  const bucket = process.env.R2_BUCKET;
-  if (!accountId || !accessKeyId || !secretAccessKey || !bucket) return null;
-  const jurisdiction = process.env.R2_JURISDICTION === "eu" ? ".eu" : "";
-  return { endpoint: `https://${accountId}${jurisdiction}.r2.cloudflarestorage.com`, accessKeyId, secretAccessKey, bucket };
+  const read = readR2Settings(process.env);
+  return read.ok ? read.settings : null;
+}
+
+/** Why storage cannot be used, in plain words (names the setting, never its value), or null when it can. */
+export function storageProblem(): string | null {
+  const read = readR2Settings(process.env);
+  if (read.ok) return null;
+  return read.missing ? STORAGE_NOT_CONNECTED : `Storage settings need fixing in Vercel: ${read.problem}`;
 }
 
 export const STORAGE_NOT_CONNECTED = "Storage is not connected yet. Add the R2 settings to the Studio's environment.";

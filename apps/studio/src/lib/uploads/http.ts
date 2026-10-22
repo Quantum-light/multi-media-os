@@ -3,13 +3,13 @@ import type { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseUploadDb } from "./db";
 import { UploadError, uploadService, type UploadService } from "./service";
-import { r2Store, STORAGE_NOT_CONNECTED } from "./store";
+import { r2Store, storageProblem } from "./store";
 
 /** Runs one upload API call: signed-in check, body validation, and errors as JSON with the right status. */
 export async function handleUpload<S extends z.ZodTypeAny>(request: Request, schema: S, run: (svc: UploadService, body: z.output<S>) => Promise<unknown>) {
   try {
     const store = r2Store();
-    if (!store) return NextResponse.json({ code: "storage_not_connected", message: STORAGE_NOT_CONNECTED }, { status: 503 });
+    if (!store) return NextResponse.json({ code: "storage_not_connected", message: storageProblem() }, { status: 503 });
 
     const supabase = await createClient();
     const { data } = await supabase.auth.getUser();
