@@ -3,4 +3,7 @@ export * from "./pipeline";
 export * from "./content";
 export * from "./style";
 export * from "./studio";
+export * from "./transcript";
+export * from "./clip";
 export * from "./steps/ingest";
+export * from "./steps/transcribe";

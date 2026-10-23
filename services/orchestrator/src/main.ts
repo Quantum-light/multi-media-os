@@ -8,7 +8,9 @@ import { databaseConnection } from "./db/connect";
 import { PgQueue } from "./pg-queue";
 import { runWorker } from "./runner";
 import { r2WorkerStore } from "./storage";
+import { assemblyAiTranscriber } from "./transcribe/assemblyai";
 import { ingestHandler } from "./steps/ingest";
+import { transcribeHandler } from "./steps/transcribe";
 
 const connection = databaseConnection(process.env);
 if ("error" in connection) {
@@ -30,8 +32,21 @@ for (const sig of ["SIGTERM", "SIGINT"] as const) {
   });
 }
 
-console.log(`[worker] ${workerId} ready: ingest`);
-await runWorker(queue, [ingestHandler(store)], {
+/**
+ * A step is only offered when it can actually be done. Without its key, the
+ * handler is left out and its jobs stay queued — which is honest, and lets the
+ * episode carry on the moment the key is added. Registering it anyway would
+ * fail every job on arrival and mark the episode failed.
+ */
+const handlers = [ingestHandler(store)];
+if ((process.env["ASSEMBLYAI_API_KEY"] ?? "").trim() !== "") {
+  handlers.push(transcribeHandler(store, assemblyAiTranscriber()));
+} else {
+  console.warn("[worker] transcribe is not available: ASSEMBLYAI_API_KEY is not set. Its jobs will wait in the queue.");
+}
+
+console.log(`[worker] ${workerId} ready: ${handlers.map((h) => h.step.name).join(", ")}`);
+await runWorker(queue, handlers, {
   workerId,
   signal: stop.signal,
   leaseSeconds: Number(process.env.LEASE_SECONDS ?? 300),
