@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { transcribe, wordCount } from "@mmos/contracts";
 import { derivedKey } from "@mmos/media";
-import { defineHandler } from "../handler";
+import { defineHandler, NonRetryableError } from "../handler";
 import type { Transcriber } from "../transcribe/port";
 import type { WorkerStore } from "../storage";
 
@@ -28,6 +28,8 @@ export function transcribeHandler(store: WorkerStore, transcriber: Transcriber, 
           ...(signal ? { signal } : {}),
         });
 
+        tooCoarseToCut(result.segments.length, input.durationS);
+
         const transcriptPath = join(dir, "transcript.json");
         await writeFile(transcriptPath, JSON.stringify(result, null, 2), "utf8");
         const transcriptKey = derivedKey(job.workspaceId, job.episodeId, "transcript.json");
@@ -49,4 +51,24 @@ export function transcribeHandler(store: WorkerStore, transcriber: Transcriber, 
       }
     },
   });
+}
+
+/**
+ * A transcript that is one long block is useless to every step after it: `cut`
+ * and `clip` seek by time, and cannot cut inside a segment. This happened for
+ * real — speaker turns on a one-speaker recording came back as a single
+ * twelve-minute utterance — so it is now caught here rather than discovered
+ * later as a pile of clips that all start at zero.
+ */
+const LONGEST_USEFUL_SEGMENT_S = 60;
+
+export function tooCoarseToCut(segmentCount: number, durationS: number): void {
+  if (segmentCount === 0) throw new NonRetryableError("The transcript came back empty.");
+  const average = durationS / segmentCount;
+  if (average > LONGEST_USEFUL_SEGMENT_S) {
+    throw new NonRetryableError(
+      `The transcript is too coarse to cut from: ${segmentCount} segment(s) across ${Math.round(durationS)} seconds, ` +
+        `averaging ${Math.round(average)}s each. Later steps seek by time and cannot cut inside a segment.`,
+    );
+  }
 }

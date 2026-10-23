@@ -7,7 +7,7 @@ import { NonRetryableError } from "../handler";
 import type { ClaimedJob } from "../queue";
 import type { WorkerStore } from "../storage";
 import type { Transcriber } from "../transcribe/port";
-import { transcribeHandler } from "./transcribe";
+import { tooCoarseToCut, transcribeHandler } from "./transcribe";
 
 const WORKSPACE = "11111111-1111-4111-8111-111111111111";
 const EPISODE = "22222222-2222-4222-8222-222222222222";
@@ -119,5 +119,31 @@ describe("the transcribe step", () => {
     await expect(handler.run({ audioKey: "k", durationS: 30 }, { job, signal: new AbortController().signal })).rejects.toThrow("boom");
     const { readdir } = await import("node:fs/promises");
     expect(await readdir(root)).toEqual([]);
+  });
+});
+
+describe("a transcript that cannot be cut from", () => {
+  it("refuses one long block, because every later step seeks by time", () => {
+    expect(() => tooCoarseToCut(1, 759)).toThrow(/too coarse to cut from/);
+  });
+
+  it("accepts a normal sentence-level breakdown", () => {
+    expect(() => tooCoarseToCut(240, 759)).not.toThrow();
+  });
+
+  it("refuses an empty transcript outright", () => {
+    expect(() => tooCoarseToCut(0, 759)).toThrow(/empty/);
+  });
+
+  it("stops the step rather than storing something uncuttable", async () => {
+    const oneBlock = Transcript.parse({
+      language: "en",
+      durationS: 759,
+      provider: "fake",
+      segments: [{ startS: 0, endS: 759, text: "twelve minutes in one go" }],
+    });
+    const handler = transcribeHandler(store(), transcriber(oneBlock), { workRoot: root });
+    await expect(handler.run({ audioKey: "k", durationS: 759 }, { job, signal: new AbortController().signal })).rejects.toThrow(/too coarse/);
+    expect(uploaded).toHaveLength(0);
   });
 });

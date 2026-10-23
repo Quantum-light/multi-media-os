@@ -1,0 +1,222 @@
+{
+  "$comment": "The build plan, as something a machine can check. docs/build/plan.md is the same plan in words. Run `npm run check:plan`: an item marked done whose checks fail is a regression; an item not marked done whose checks all pass is work finished but unrecorded. Keep the two files in step.",
+  "items": [
+    {
+      "id": "p1.transcript",
+      "phase": 1,
+      "title": "The transcript is its own document",
+      "done": true,
+      "checks": [
+        { "kind": "file", "path": "packages/contracts/src/transcript.ts" },
+        { "kind": "file", "path": "packages/contracts/src/transcript.test.ts" },
+        { "kind": "contains", "path": "packages/contracts/src/index.ts", "text": "./transcript" }
+      ]
+    },
+    {
+      "id": "p1.transcribe",
+      "phase": 1,
+      "title": "Transcribe runs behind a port, and is left out when its key is missing",
+      "done": true,
+      "checks": [
+        { "kind": "file", "path": "packages/contracts/src/steps/transcribe.ts" },
+        { "kind": "file", "path": "services/orchestrator/src/transcribe/port.ts" },
+        { "kind": "file", "path": "services/orchestrator/src/transcribe/assemblyai.ts" },
+        { "kind": "file", "path": "services/orchestrator/src/steps/transcribe.test.ts" },
+        { "kind": "contains", "path": "services/orchestrator/src/main.ts", "text": "ASSEMBLYAI_API_KEY" }
+      ]
+    },
+    {
+      "id": "p1.clip-contracts",
+      "phase": 1,
+      "title": "The four signals, and a candidate that must explain itself",
+      "done": true,
+      "checks": [
+        { "kind": "file", "path": "packages/contracts/src/clip.ts" },
+        { "kind": "contains", "path": "packages/contracts/src/clip.ts", "text": "standalone_idea" },
+        { "kind": "contains", "path": "packages/contracts/src/clip.ts", "text": "opening_line" },
+        { "kind": "contains", "path": "packages/contracts/src/clip.ts", "text": "surprising" },
+        { "kind": "contains", "path": "packages/contracts/src/clip.ts", "text": "personal" }
+      ]
+    },
+    {
+      "id": "p1.clip-select",
+      "phase": 1,
+      "title": "The finder's deterministic half: rank, de-overlap, vary, reserve, never pad",
+      "done": true,
+      "checks": [
+        { "kind": "file", "path": "services/orchestrator/src/clips/select.ts" },
+        { "kind": "file", "path": "services/orchestrator/src/clips/select.test.ts" }
+      ]
+    },
+    {
+      "id": "p1.style-loop",
+      "phase": 1,
+      "title": "Styles keep their history; corrections are recorded",
+      "done": true,
+      "checks": [
+        { "kind": "migration", "name": "0012_style_loop" },
+        { "kind": "file", "path": "packages/db/tests/style_loop.sql" },
+        { "kind": "table", "name": "style_versions" },
+        { "kind": "table", "name": "style_edits" },
+        { "kind": "function", "schema": "private", "name": "record_style_version" }
+      ]
+    },
+
+    {
+      "id": "p2.transcribe-live",
+      "phase": 2,
+      "title": "Transcribe is actually running (the key is in Railway)",
+      "done": false,
+      "checks": [{ "kind": "jobs-succeeded", "step": "transcribe" }]
+    },
+    {
+      "id": "p2.cut",
+      "phase": 2,
+      "title": "Cut: silence, ums, false starts and tangents, against the episode style",
+      "done": false,
+      "checks": [
+        { "kind": "file", "path": "packages/contracts/src/steps/cut.ts" },
+        { "kind": "file", "path": "services/orchestrator/src/steps/cut.test.ts" }
+      ]
+    },
+    {
+      "id": "p2.understand",
+      "phase": 2,
+      "title": "Understand: themes, claims and moments fill the graph",
+      "done": false,
+      "checks": [
+        { "kind": "file", "path": "packages/contracts/src/steps/understand.ts" },
+        { "kind": "file", "path": "services/orchestrator/src/steps/understand.test.ts" }
+      ]
+    },
+    {
+      "id": "p2.clip-step",
+      "phase": 2,
+      "title": "The finder's model half, feeding selectClips",
+      "done": false,
+      "checks": [
+        { "kind": "file", "path": "packages/contracts/src/steps/clip.ts" },
+        { "kind": "file", "path": "services/orchestrator/src/steps/clip.test.ts" },
+        { "kind": "table", "name": "clips" }
+      ]
+    },
+    {
+      "id": "p2.write",
+      "phase": 2,
+      "title": "Write: titles, descriptions, captions and posts in the brand's voice",
+      "done": false,
+      "checks": [
+        { "kind": "file", "path": "packages/contracts/src/steps/write.ts" },
+        { "kind": "file", "path": "services/orchestrator/src/steps/write.test.ts" }
+      ]
+    },
+
+    {
+      "id": "p3.review",
+      "phase": 3,
+      "title": "Review: the one gate, with the agent chat",
+      "done": false,
+      "checks": [
+        { "kind": "file", "path": "apps/studio/src/app/(studio)/review/page.tsx" },
+        { "kind": "contains", "path": "apps/studio/src/components/Rail.tsx", "text": "/review" }
+      ]
+    },
+    {
+      "id": "p3.review-records-edits",
+      "phase": 3,
+      "title": "Every correction in Review writes a style_edits row — the loop closes",
+      "done": false,
+      "checks": [{ "kind": "contains", "path": "apps/studio/src/app/(studio)/review/actions.ts", "text": "style_edits" }]
+    },
+    {
+      "id": "p3.clip-studio",
+      "phase": 3,
+      "title": "Clip Studio: the ranked board, the slate and the reserve",
+      "done": false,
+      "checks": [{ "kind": "file", "path": "apps/studio/src/app/(studio)/review/clips/page.tsx" }]
+    },
+
+    {
+      "id": "p4.distil",
+      "phase": 4,
+      "title": "Distil proposes a new style version from accumulated corrections",
+      "done": false,
+      "checks": [
+        { "kind": "file", "path": "services/orchestrator/src/steps/distil.ts" },
+        { "kind": "file", "path": "services/orchestrator/src/steps/distil.test.ts" }
+      ]
+    },
+    {
+      "id": "p4.learn-style",
+      "phase": 4,
+      "title": "Learn a style from a finished edit and the recording it came from",
+      "done": false,
+      "checks": [{ "kind": "file", "path": "services/orchestrator/src/steps/learn-style.ts" }]
+    },
+
+    {
+      "id": "p5.render",
+      "phase": 5,
+      "title": "Compose and render: finished video actually gets made",
+      "done": false,
+      "checks": [
+        { "kind": "file", "path": "services/orchestrator/src/steps/render.ts" },
+        { "kind": "file", "path": "services/render-worker/package.json" }
+      ]
+    },
+    {
+      "id": "p5.publish",
+      "phase": 5,
+      "title": "Publish through Zernio, against each show's slots, with no double-posting",
+      "done": false,
+      "checks": [
+        { "kind": "file", "path": "services/orchestrator/src/steps/publish.ts" },
+        { "kind": "jobs-succeeded", "step": "publish" }
+      ]
+    },
+
+    {
+      "id": "p6.map",
+      "phase": 6,
+      "title": "Map: search everything she has ever said",
+      "done": false,
+      "checks": [{ "kind": "file", "path": "apps/studio/src/app/(studio)/map/page.tsx" }]
+    },
+    {
+      "id": "p6.plan",
+      "phase": 6,
+      "title": "Plan and Trends, with Scout agents proposing from her own material",
+      "done": false,
+      "checks": [{ "kind": "file", "path": "apps/studio/src/app/(studio)/plan/page.tsx" }]
+    },
+    {
+      "id": "p6.constellation",
+      "phase": 6,
+      "title": "Constellation: themes through time, and holds for future moments",
+      "done": false,
+      "checks": [{ "kind": "file", "path": "apps/studio/src/app/(studio)/constellation/page.tsx" }]
+    },
+    {
+      "id": "p6.analytics",
+      "phase": 6,
+      "title": "Analytics: every KPI on Vision opens to its source",
+      "done": false,
+      "checks": [{ "kind": "file", "path": "apps/studio/src/app/(studio)/analytics/page.tsx" }]
+    },
+
+    {
+      "id": "x.time-anchor-policies",
+      "phase": 0,
+      "title": "Migration 0004 applied (it drops a policy, so it waits for a person)",
+      "done": false,
+      "checks": [{ "kind": "migration", "name": "0004_time_anchor_policies" }]
+    },
+    {
+      "id": "x.calendar-layers",
+      "phase": 0,
+      "title": "Calendar layers: per show, per platform, themes and the arc",
+      "done": false,
+      "checks": [{ "kind": "contains", "path": "apps/studio/src/app/(studio)/calendar/page.tsx", "text": "layer" }]
+    }
+  ]
+}

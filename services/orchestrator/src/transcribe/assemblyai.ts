@@ -25,7 +25,10 @@ export function assemblyAiTranscriber(env: NodeJS.ProcessEnv = process.env): Tra
       const created = await post<Job>(key, "/transcript", { audio_url: uploadUrl, speaker_labels: true, ...(language ? { language_code: language } : { language_detection: true }) }, signal);
       const done = await waitFor(key, created.id, signal);
 
-      const utterances = done.utterances ?? done.words ?? [];
+      // Sentences, not speaker turns. One person talking for twelve minutes is a
+      // single utterance, which is useless for cutting: every later step seeks by
+      // time. Utterances and words are fallbacks if sentences are unavailable.
+      const utterances = (await sentences(key, created.id, signal)) ?? done.utterances ?? done.words ?? [];
       if (utterances.length === 0) throw new NonRetryableError("The recording produced no words. It may be silent or music only.");
 
       return Transcript.parse({
@@ -43,6 +46,18 @@ export function assemblyAiTranscriber(env: NodeJS.ProcessEnv = process.env): Tra
       });
     },
   };
+}
+
+/** Null rather than a throw: a missing breakdown is a worse transcript, not a failed one. */
+async function sentences(key: string, id: string, signal?: AbortSignal): Promise<Utterance[] | null> {
+  try {
+    const response = await fetch(`${BASE}/transcript/${id}/sentences`, { headers: { authorization: key }, ...(signal ? { signal } : {}) });
+    if (!response.ok) return null;
+    const body = (await response.json()) as { sentences?: Utterance[] | null };
+    return body.sentences && body.sentences.length > 0 ? body.sentences : null;
+  } catch {
+    return null;
+  }
 }
 
 async function upload(key: string, path: string, signal?: AbortSignal): Promise<string> {

@@ -33,7 +33,14 @@ The full build plan lives in the Claude Doc "multi-media-os — Build Plan". Thi
 npm ci --include=dev
 npm run dev        # Studio on http://localhost:3200
 npm run check      # size, layers, types, tests
+npm run check:plan # is the build plan actually done? (docs/build/plan.json)
+npm run check:e2e  # does the whole system still work, against the live project?
 ```
+
+The plan lives in `docs/build/plan.md`, and `docs/build/plan.json` is the same
+plan as checks. Finish something, mark it `done` there; `npm run check:plan`
+reports an item marked done whose checks no longer pass, and an item that passes
+every check but was never marked done.
 
 ## Autonomy
 Level 0 today: every pull request is reviewed by a person. Migrations, auth, billing, publishing and these rules always need a person.
