@@ -9,7 +9,7 @@ type Group = { label?: string; items: Item[] };
 
 // Pages not built yet stay out of the rail (anti-clunk rule 9: nothing half-built on main).
 const GROUPS: Group[] = [
-  { items: [{ href: "/", label: "Today" }, { href: "/upload", label: "Upload" }] },
+  { items: [{ href: "/", label: "Today" }, { href: "/upload", label: "Upload" }, { href: "/episodes", label: "Episodes" }] },
   { label: "Plan", items: [{ href: "/calendar", label: "Calendar" }] },
   {
     label: "Studio",

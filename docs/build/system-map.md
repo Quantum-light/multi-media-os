@@ -58,6 +58,19 @@ Built: month grid with posts and moments in time.
 Reads `posts`, `shows`, `time_anchors`, later `themes` and `edges`.
 Done: Grace can see a month as story, not just as dates, and switch layers.
 
+### 5b. Episodes — `/episodes`, `/episodes/[id]` — live
+The library. Every recording that has been put in, what state it is in, and what has been
+made from it: each pipeline step with where it got to and why it stopped, the files in
+storage, the transcript to read, and the shorts once the finder has run.
+
+Not in the original design, and it should have been: Review is a *decision* about one
+episode at one moment, and this is the place to *look* at anything, any time, including
+after it has been approved and published. Without it an upload disappears into the
+pipeline with nowhere to follow it.
+
+Reads episodes, jobs, media assets, and the transcript from storage. Writes nothing.
+Done: Grace can open a recording she put in last month and read what she said in it.
+
 ### 6. Review, with the agent chat — `/review`, `/review/[episode]` — planned
 **The one gate.** The 540p preview with the cut list applied on playback, every written piece side
 by side, every planned post per channel and time, and a chat that edits any piece in words.

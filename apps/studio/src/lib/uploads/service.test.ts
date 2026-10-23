@@ -27,6 +27,7 @@ function fakes(opts: { duplicate?: boolean; storedBytes?: number | "match"; fail
     async listParts() { return [{ partNumber: 1, etag: '"a"' }]; },
     async complete() { calls.push("complete"); },
     async abort() { calls.push("abort"); },
+    async readText() { return null; },
     async size(key) {
       const a = [...assets.values()].find((x) => x.key === key);
       return opts.storedBytes === undefined || opts.storedBytes === "match" ? (a?.bytes ?? null) : opts.storedBytes;

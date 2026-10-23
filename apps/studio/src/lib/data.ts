@@ -12,3 +12,4 @@ export { getVision, type VisionData, type VisionShow } from "./data/vision";
 export { getBrand, type BrandData, type BrandChoice } from "./data/brand";
 export { getStyles, type StylesData, type StyleCard } from "./data/styles";
 export { getStudioSetup, type StudioSetup, type ShowSetup, type BrandRef, type ChannelRef } from "./data/studio-setup";
+export { getEpisodes, getEpisode, type EpisodeRow, type EpisodeDetail, type EpisodeStep, type EpisodeFile } from "./data/episodes";

@@ -2,6 +2,7 @@ import {
   AbortMultipartUploadCommand,
   CompleteMultipartUploadCommand,
   CreateMultipartUploadCommand,
+  GetObjectCommand,
   HeadObjectCommand,
   ListPartsCommand,
   S3Client,
@@ -18,6 +19,8 @@ export type ObjectStore = {
   complete(key: string, uploadId: string, parts: CompletedPart[]): Promise<void>;
   abort(key: string, uploadId: string): Promise<void>;
   size(key: string): Promise<number | null>;
+  /** Reads a small object as text — a transcript, a cut list. Null when it is not there. */
+  readText(key: string, maxBytes: number): Promise<string | null>;
 };
 
 const SIGNED_URL_SECONDS = 60 * 60;
@@ -85,6 +88,15 @@ export function r2Store(): ObjectStore | null {
       try {
         const out = await s3.send(new HeadObjectCommand({ Bucket, Key: key }));
         return out.ContentLength ?? null;
+      } catch {
+        return null;
+      }
+    },
+    async readText(key, maxBytes) {
+      try {
+        const out = await s3.send(new GetObjectCommand({ Bucket, Key: key }));
+        if ((out.ContentLength ?? 0) > maxBytes) throw new Error(`${key} is larger than ${maxBytes} bytes`);
+        return (await out.Body?.transformToString()) ?? null;
       } catch {
         return null;
       }

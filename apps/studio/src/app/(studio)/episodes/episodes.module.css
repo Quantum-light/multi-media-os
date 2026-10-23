@@ -1,0 +1,25 @@
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+
+.card { display: flex; flex-direction: column; gap: 14px; padding: 24px 26px; border-radius: 22px; min-width: 0; text-decoration: none; color: inherit; }
+.card:hover { background: rgba(255, 255, 255, 0.6); }
+.title { margin: 0; font-family: var(--font-title), Georgia, serif; font-weight: 400; font-size: 22px; line-height: 1.15; }
+
+.steps { display: flex; flex-direction: column; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.step { display: flex; align-items: baseline; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--hairline); }
+.step:last-child { border-bottom: 0; }
+.stepName { flex: 1 1 auto; font-size: 15px; }
+.stepWhen { font-size: 12px; color: var(--ink-quiet); }
+.dot { flex: 0 0 8px; width: 8px; height: 8px; border-radius: 999px; background: rgba(46, 52, 66, 0.15); }
+.dotDone { background: var(--good); }
+.dotNow { background: var(--gold); }
+.dotStopped { background: #b4503f; }
+.stepError { flex: 1 1 100%; font-size: 13px; color: #b4503f; padding-left: 22px; }
+
+.files { display: grid; grid-template-columns: auto 1fr auto; gap: 8px 20px; font-size: 13px; align-items: baseline; }
+.files dt { color: var(--ink-quiet); }
+.files dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+
+.transcript { display: flex; flex-direction: column; gap: 14px; max-height: 520px; overflow-y: auto; padding-right: 8px; }
+.line { display: flex; gap: 16px; align-items: baseline; }
+.at { flex: 0 0 52px; font-size: 12px; color: var(--gold-ink); }
+.said { font-size: 15px; line-height: 1.6; }

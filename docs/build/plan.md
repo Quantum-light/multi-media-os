@@ -22,6 +22,11 @@ a long episode runs to hundreds of kilobytes. The transcribe step behind a
 four signals. `selectClips`, the deterministic half of the finder. Migration
 0012, the style loop.
 
+**Episodes** (`/episodes`) — the library the design was missing. Every recording,
+how far it got, each step's state and reason for stopping, the files, and the
+transcript to read. Review is a decision about one episode at one moment; this
+is where you look at anything, any time.
+
 The worker now registers a step only when it can actually be done: without its
 key the handler is left out and those jobs wait in the queue. Registering it
 regardless would fail every job on arrival and mark the episode failed.
