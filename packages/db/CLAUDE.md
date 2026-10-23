@@ -24,4 +24,5 @@ Owns the database: migrations, generated types, typed queries.
 - `private.touch_updated_at()` uses `clock_timestamp()`, not `now()`: `now()` is frozen at transaction start, so two edits in one transaction would record the same `updated_at` and the test for it could never fail honestly.
 - `rls_auto_enable()` had `execute` revoked from `public`, `anon` and `authenticated` on 7 Oct 2026 — it was reachable from the public REST API. `start_ingest` stays callable by signed-in users, which is intended.
 - Still open: `time_anchors_write` is `for all`, so it is evaluated on reads too. Splitting it needs a `drop policy`, so it waits for a person at the console.
-
+- `0012_agent_outputs.sql`: transcripts, pieces (one current text per title, description, chapters, caption), piece_versions (every version, by agent, person or chat), voice_lessons; `advance_episode` records transcribe, understand (moments, themes, edges) and write. Test: `tests/agent_outputs.sql`.
+- `0013_review.sql`: `public.save_piece` (the only way to edit a draft: new version plus a voice lesson), `public.plan_posts` (next free slot per connected channel), `public.approve_episode` (owners and approvers; schedules one post per channel, idempotent), `private.can_approve`. Test: `tests/review.sql`.

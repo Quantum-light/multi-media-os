@@ -4,21 +4,22 @@
     {
       "id": "p1.transcript",
       "phase": 1,
-      "title": "The transcript is its own document",
+      "title": "The transcript document: word timings in storage, text and counts in the database",
       "done": true,
       "checks": [
         {
-          "kind": "file",
-          "path": "packages/contracts/src/transcript.ts"
-        },
-        {
-          "kind": "file",
-          "path": "packages/contracts/src/transcript.test.ts"
-        },
-        {
           "kind": "contains",
-          "path": "packages/contracts/src/index.ts",
-          "text": "./transcript"
+          "path": "packages/contracts/src/steps/transcribe.ts",
+          "text": "TranscriptDoc"
+        },
+        {
+          "kind": "table",
+          "name": "transcripts"
+        },
+        {
+          "kind": "function",
+          "schema": "private",
+          "name": "record_transcribe"
         }
       ]
     },
@@ -34,15 +35,11 @@
         },
         {
           "kind": "file",
-          "path": "services/orchestrator/src/transcribe/port.ts"
+          "path": "services/orchestrator/src/steps/transcribe.ts"
         },
         {
           "kind": "file",
-          "path": "services/orchestrator/src/transcribe/assemblyai.ts"
-        },
-        {
-          "kind": "file",
-          "path": "services/orchestrator/src/steps/transcribe.test.ts"
+          "path": "services/orchestrator/src/providers/assemblyai.ts"
         },
         {
           "kind": "contains",
@@ -169,7 +166,7 @@
       "id": "p2.cut",
       "phase": 2,
       "title": "Cut: silence, ums, false starts and tangents, against the episode style",
-      "done": false,
+      "done": true,
       "checks": [
         {
           "kind": "file",
@@ -177,7 +174,11 @@
         },
         {
           "kind": "file",
-          "path": "services/orchestrator/src/steps/cut.test.ts"
+          "path": "services/orchestrator/src/steps/cut.ts"
+        },
+        {
+          "kind": "file",
+          "path": "services/orchestrator/src/edit/edit.test.ts"
         }
       ]
     },
@@ -185,7 +186,7 @@
       "id": "p2.understand",
       "phase": 2,
       "title": "Understand: themes, claims and moments fill the graph",
-      "done": false,
+      "done": true,
       "checks": [
         {
           "kind": "file",
@@ -193,14 +194,26 @@
         },
         {
           "kind": "file",
-          "path": "services/orchestrator/src/steps/understand.test.ts"
+          "path": "services/orchestrator/src/steps/agents.ts"
+        },
+        {
+          "kind": "file",
+          "path": "packages/agents/src/understand.ts"
+        },
+        {
+          "kind": "migration",
+          "name": "0013_agent_outputs"
+        },
+        {
+          "kind": "table",
+          "name": "transcripts"
         }
       ]
     },
     {
       "id": "p2.clip-step",
       "phase": 2,
-      "title": "The finder's model half, feeding selectClips",
+      "title": "The clip step produces a scored slate (it caps at 8 and does not use the four signals yet)",
       "done": false,
       "checks": [
         {
@@ -209,11 +222,12 @@
         },
         {
           "kind": "file",
-          "path": "services/orchestrator/src/steps/clip.test.ts"
+          "path": "services/orchestrator/src/steps/shorts.ts"
         },
         {
-          "kind": "table",
-          "name": "clips"
+          "kind": "contains",
+          "path": "services/orchestrator/src/steps/shorts.ts",
+          "text": "selectClips"
         }
       ]
     },
@@ -221,7 +235,7 @@
       "id": "p2.write",
       "phase": 2,
       "title": "Write: titles, descriptions, captions and posts in the brand's voice",
-      "done": false,
+      "done": true,
       "checks": [
         {
           "kind": "file",
@@ -229,7 +243,15 @@
         },
         {
           "kind": "file",
-          "path": "services/orchestrator/src/steps/write.test.ts"
+          "path": "packages/agents/src/write.ts"
+        },
+        {
+          "kind": "table",
+          "name": "pieces"
+        },
+        {
+          "kind": "table",
+          "name": "piece_versions"
         }
       ]
     },
@@ -237,28 +259,45 @@
       "id": "p3.review",
       "phase": 3,
       "title": "Review: the one gate, with the agent chat",
-      "done": false,
+      "done": true,
       "checks": [
         {
           "kind": "file",
           "path": "apps/studio/src/app/(studio)/review/page.tsx"
         },
         {
+          "kind": "file",
+          "path": "apps/studio/src/app/(studio)/review/[episode]/page.tsx"
+        },
+        {
           "kind": "contains",
           "path": "apps/studio/src/components/Rail.tsx",
           "text": "/review"
+        },
+        {
+          "kind": "migration",
+          "name": "0015_review"
+        },
+        {
+          "kind": "function",
+          "schema": "public",
+          "name": "approve_episode"
         }
       ]
     },
     {
       "id": "p3.review-records-edits",
       "phase": 3,
-      "title": "Every correction in Review writes a style_edits row \u2014 the loop closes",
+      "title": "Review's corrections reach the style loop (today they land in voice_lessons only)",
       "done": false,
       "checks": [
         {
+          "kind": "table",
+          "name": "voice_lessons"
+        },
+        {
           "kind": "contains",
-          "path": "apps/studio/src/app/(studio)/review/actions.ts",
+          "path": "apps/studio/src/app/(studio)/review/[episode]/actions.ts",
           "text": "style_edits"
         }
       ]
@@ -405,6 +444,38 @@
           "kind": "contains",
           "path": "apps/studio/src/app/(studio)/calendar/page.tsx",
           "text": "layer"
+        }
+      ]
+    },
+    {
+      "id": "x.record-understand",
+      "phase": 0,
+      "title": "Migration 0014 applied (it replaces an episode's moments, so it waits for a person)",
+      "done": false,
+      "checks": [
+        {
+          "kind": "migration",
+          "name": "0014_record_understand"
+        }
+      ]
+    },
+    {
+      "id": "p5.publish-step",
+      "phase": 5,
+      "title": "The publish step and the Zernio client exist (not registered until M6)",
+      "done": true,
+      "checks": [
+        {
+          "kind": "file",
+          "path": "services/orchestrator/src/steps/publish.ts"
+        },
+        {
+          "kind": "file",
+          "path": "services/orchestrator/src/publish/zernio.ts"
+        },
+        {
+          "kind": "file",
+          "path": "services/orchestrator/src/publish/publish.test.ts"
         }
       ]
     }

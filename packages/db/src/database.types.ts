@@ -513,6 +513,108 @@ export type Database = {
           },
         ]
       }
+      piece_versions: {
+        Row: {
+          author: string
+          author_id: string | null
+          body: string
+          created_at: string
+          id: number
+          note: string | null
+          piece_id: string
+          version: number
+          workspace_id: string
+        }
+        Insert: {
+          author: string
+          author_id?: string | null
+          body: string
+          created_at?: string
+          id?: never
+          note?: string | null
+          piece_id: string
+          version: number
+          workspace_id: string
+        }
+        Update: {
+          author?: string
+          author_id?: string | null
+          body?: string
+          created_at?: string
+          id?: never
+          note?: string | null
+          piece_id?: string
+          version?: number
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "piece_versions_piece_id_fkey"
+            columns: ["piece_id"]
+            isOneToOne: false
+            referencedRelation: "pieces"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "piece_versions_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pieces: {
+        Row: {
+          body: string
+          episode_id: string
+          id: string
+          kind: string
+          options: string[]
+          platform: string
+          updated_at: string
+          version: number
+          workspace_id: string
+        }
+        Insert: {
+          body: string
+          episode_id: string
+          id?: string
+          kind: string
+          options?: string[]
+          platform?: string
+          updated_at?: string
+          version?: number
+          workspace_id: string
+        }
+        Update: {
+          body?: string
+          episode_id?: string
+          id?: string
+          kind?: string
+          options?: string[]
+          platform?: string
+          updated_at?: string
+          version?: number
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pieces_episode_id_fkey"
+            columns: ["episode_id"]
+            isOneToOne: false
+            referencedRelation: "episodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pieces_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           channel_id: string
@@ -945,6 +1047,114 @@ export type Database = {
           },
         ]
       }
+      transcripts: {
+        Row: {
+          created_at: string
+          duration_s: number
+          episode_id: string
+          language: string
+          provider: string
+          provider_ref: string
+          speakers: string[]
+          storage_key: string
+          text: string
+          word_count: number
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_s: number
+          episode_id: string
+          language: string
+          provider: string
+          provider_ref: string
+          speakers?: string[]
+          storage_key: string
+          text: string
+          word_count: number
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_s?: number
+          episode_id?: string
+          language?: string
+          provider?: string
+          provider_ref?: string
+          speakers?: string[]
+          storage_key?: string
+          text?: string
+          word_count?: number
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transcripts_episode_id_fkey"
+            columns: ["episode_id"]
+            isOneToOne: true
+            referencedRelation: "episodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transcripts_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      voice_lessons: {
+        Row: {
+          after: string
+          before: string
+          brand_id: string
+          created_at: string
+          id: number
+          piece_kind: string
+          platform: string | null
+          source: string
+          workspace_id: string
+        }
+        Insert: {
+          after: string
+          before: string
+          brand_id: string
+          created_at?: string
+          id?: never
+          piece_kind: string
+          platform?: string | null
+          source: string
+          workspace_id: string
+        }
+        Update: {
+          after?: string
+          before?: string
+          brand_id?: string
+          created_at?: string
+          id?: never
+          piece_kind?: string
+          platform?: string | null
+          source?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voice_lessons_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "voice_lessons_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workspaces: {
         Row: {
           created_at: string
@@ -974,6 +1184,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      approve_episode: { Args: { p_episode: string }; Returns: number }
+      plan_posts: {
+        Args: { p_episode: string }
+        Returns: {
+          channel_id: string
+          platform: string
+          handle: string
+          scheduled_for: string
+        }[]
+      }
+      save_piece: {
+        Args: { p_body: string; p_note?: string; p_piece: string; p_source?: string }
+        Returns: number
+      }
       start_ingest: { Args: { p_episode: string }; Returns: string }
     }
     Enums: {

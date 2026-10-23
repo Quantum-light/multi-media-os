@@ -1,0 +1,27 @@
+{
+  "round": "round-1",
+  "date": "2026-10-19",
+  "references_folder": "~/Projects/Journeys with Time - Visual Kit/01 Inspiration",
+  "reference_strength": 0.22,
+  "sample_caption": "The light you see tonight left those stars long before you were born.",
+  "plates": [
+    { "id": "misty-horizon", "ref": "IMG_2401 2.JPG", "scene": "cone", "label": "where time goes", "prompt": "a misty horizon line dissolving into night-purple haze, a faint band of pale gold light at the horizon" },
+    { "id": "silk-veil", "ref": "IMG_2400 2.JPG", "scene": "rings", "label": "understanding time", "prompt": "a single translucent veil of aubergine silk drifting weightless through a dark void, lit faintly from one side" },
+    { "id": "light-threads", "ref": "IMG_5905.JPG", "scene": "orbits", "label": "the cycles of the cosmos", "prompt": "countless fine threads of pale light drifting like long-exposure trails through deep darkness, soft and abstract" },
+    { "id": "liquid-gold", "ref": "IMG_2399 2.JPG", "scene": "sphere", "label": "made of light", "prompt": "slow ripples of dark liquid with burnished gold reflections moving across its surface, abstract, no face" },
+    { "id": "deep-veil", "ref": "IMG_2401 2.JPG", "scene": "spacetime", "label": "spacetime bends", "prompt": "layered veils of violet mist receding into infinite depth, a faint gold haze far away" },
+    { "id": "dusk-field", "ref": "IMG_2400 2.JPG", "scene": "horizon", "label": "a new dawn", "prompt": "a dark dune field at deep dusk, sky of aubergine fading to a thin line of muted gold, empty and silent" },
+    { "id": "spectral-mist", "ref": "IMG_2405 2.JPG", "scene": "waves", "label": "frequency", "prompt": "soft spectral mist with faint horizontal streaks of platinum light, grainy, dreamlike, darkened" },
+    { "id": "breath-of-light", "ref": "IMG_2397 2.JPG", "scene": "pulse", "label": "coherence", "prompt": "a soft column of pale light breathing through deep violet haze, almost nothing there, serene" }
+  ],
+  "decisions": {
+    "spectral-mist": "yes — frequencies of waves",
+    "breath-of-light": "yes",
+    "deep-veil": "yes — the graphic look of spacetime",
+    "liquid-gold": "no — the 3D aspect",
+    "light-threads": "yes — the light and lines",
+    "silk-veil": "yes — the disconnection of time",
+    "misty-horizon": "yes — different views",
+    "dusk-field": "undecided"
+  }
+}

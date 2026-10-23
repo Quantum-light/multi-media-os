@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import type { ClipCandidate, ClipSignal } from "@mmos/contracts";
+import type { ScoredClip, ClipSignal } from "@mmos/contracts";
 import { describeShortfall, overlapFraction, selectClips } from "./select";
 
-function clip(startS: number, endS: number, score: number, signal: ClipSignal = "standalone_idea"): ClipCandidate {
+function clip(startS: number, endS: number, score: number, signal: ClipSignal = "standalone_idea"): ScoredClip {
   return { startS, endS, score, signal, hook: `h${startS}`, quote: `q${startS}`, reason: `r${startS}` };
 }
 

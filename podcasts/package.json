@@ -1,0 +1,29 @@
+{
+  "name": "@mmos/podcasts",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Podcast clip engine + shows. One episode in, branded clips out; each show brings its own brand, rules and template.",
+  "scripts": {
+    "clips": "node engine/run.mjs",
+    "schedule": "node engine/scripts/schedule.mjs",
+    "lab": "node engine/scripts/brand-lab.mjs",
+    "animate-plates": "node engine/scripts/animate-plates.mjs",
+    "scene-sheet": "node engine/scripts/scene-sheet.mjs",
+    "studio": "remotion studio shows/journeys-with-time/template/index.ts"
+  },
+  "dependencies": {
+    "@remotion/bundler": "^4.0.242",
+    "@remotion/cli": "4.0.242",
+    "@remotion/google-fonts": "4.0.242",
+    "@remotion/media-utils": "^4.0.242",
+    "@remotion/renderer": "4.0.242",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.242"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "typescript": "5.8.2"
+  }
+}

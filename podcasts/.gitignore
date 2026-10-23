@@ -1,0 +1,10 @@
+node_modules
+.env
+# Rendered and generated media stays on the machine, not in git
+shows/*/out/
+shows/*/public/
+shows/*/brand/candidates/
+shows/*/brand/archive/
+shows/*/brand/plates/*.mp4
+shows/*/brand/plates/_*
+shows/*/episodes/

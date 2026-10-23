@@ -38,6 +38,20 @@ export function storageProblem(): string | null {
   return read.missing ? STORAGE_NOT_CONNECTED : `Storage settings need fixing in Vercel: ${read.problem}`;
 }
 
+/** A short-lived read link for one stored file (the Review preview), or null when storage is not connected. */
+export async function signedReadUrl(key: string, seconds = 3 * 3600): Promise<string | null> {
+  const env = r2Env();
+  if (!env) return null;
+  const s3 = new S3Client({
+    region: "auto",
+    endpoint: env.endpoint,
+    credentials: { accessKeyId: env.accessKeyId, secretAccessKey: env.secretAccessKey },
+    requestChecksumCalculation: "WHEN_REQUIRED",
+    responseChecksumValidation: "WHEN_REQUIRED",
+  });
+  return getSignedUrl(s3, new GetObjectCommand({ Bucket: env.bucket, Key: key }), { expiresIn: seconds });
+}
+
 export const STORAGE_NOT_CONNECTED = "Storage is not connected yet. Add the R2 settings to the Studio's environment.";
 
 /** Cloudflare R2 through its S3 API, or null when the settings are missing. */

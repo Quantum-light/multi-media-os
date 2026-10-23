@@ -1,4 +1,4 @@
-import type { ClipCandidate, ClipPlan, ClipSignal } from "@mmos/contracts";
+import type { ScoredClip, ClipPlan, ClipSignal } from "@mmos/contracts";
 
 /**
  * Turning a pile of scored moments into the slate a person actually reviews.
@@ -23,7 +23,7 @@ export type SelectOptions = {
 
 const DEFAULTS = { minScore: 50, minSeconds: 8, maxSeconds: 90, maxOverlap: 0.25, ensureEachSignal: true };
 
-export function selectClips(candidates: readonly ClipCandidate[], options: SelectOptions): ClipPlan {
+export function selectClips(candidates: readonly ScoredClip[], options: SelectOptions): ClipPlan {
   const { target } = options;
   const minScore = options.minScore ?? DEFAULTS.minScore;
   const minSeconds = options.minSeconds ?? DEFAULTS.minSeconds;
@@ -40,7 +40,7 @@ export function selectClips(candidates: readonly ClipCandidate[], options: Selec
   const ranked = [...worthOffering].sort((a, b) => b.score - a.score || a.startS - b.startS);
 
   // One moment, one clip. A lower-scoring clip of the same moment is not a second short.
-  const distinct: ClipCandidate[] = [];
+  const distinct: ScoredClip[] = [];
   for (const candidate of ranked) {
     if (!distinct.some((kept) => overlapFraction(kept, candidate) > maxOverlap)) distinct.push(candidate);
   }
@@ -57,10 +57,10 @@ export function selectClips(candidates: readonly ClipCandidate[], options: Selec
  * even when each one scores well. So the best of each signal is promoted into
  * the slate first, and everything after that is pure score.
  */
-function signalFirst(ranked: readonly ClipCandidate[], target: number): ClipCandidate[] {
+function signalFirst(ranked: readonly ScoredClip[], target: number): ScoredClip[] {
   const seen = new Set<ClipSignal>();
-  const first: ClipCandidate[] = [];
-  const rest: ClipCandidate[] = [];
+  const first: ScoredClip[] = [];
+  const rest: ScoredClip[] = [];
 
   for (const candidate of ranked) {
     if (!seen.has(candidate.signal) && first.length < target) {
@@ -74,7 +74,7 @@ function signalFirst(ranked: readonly ClipCandidate[], target: number): ClipCand
 }
 
 /** How much two clips share, as a fraction of the shorter one. 0 when they do not touch. */
-export function overlapFraction(a: ClipCandidate, b: ClipCandidate): number {
+export function overlapFraction(a: ScoredClip, b: ScoredClip): number {
   const shared = Math.min(a.endS, b.endS) - Math.max(a.startS, b.startS);
   if (shared <= 0) return 0;
   const shorter = Math.min(a.endS - a.startS, b.endS - b.startS);

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { Transcript } from "@mmos/contracts";
+import { TranscriptDoc } from "@mmos/contracts";
 import { keyInWorkspace } from "@mmos/media";
 import { createClient } from "@/lib/supabase/server";
 import { r2Store, storageProblem } from "@/lib/uploads/store";
@@ -45,7 +45,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   const body = await store.readText(key, MAX_BYTES);
   if (body === null) return NextResponse.json({ message: "The transcript could not be read from storage." }, { status: 502 });
 
-  const parsed = Transcript.safeParse(JSON.parse(body) as unknown);
+  const parsed = TranscriptDoc.safeParse(JSON.parse(body) as unknown);
   if (!parsed.success) return NextResponse.json({ message: "The stored transcript is not in a shape this Studio understands." }, { status: 502 });
 
   return NextResponse.json(parsed.data);

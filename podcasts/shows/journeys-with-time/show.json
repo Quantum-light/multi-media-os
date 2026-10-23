@@ -1,0 +1,67 @@
+{
+  "id": "journeys-with-time",
+  "name": "Journeys with Time",
+  "host": "Grace Gold",
+  "brand_line": "the Quantum Light Science podcast by Grace Gold",
+  "lockup": {
+    "title": "JOURNEYS WITH TIME",
+    "tag": "PODCAST",
+    "credit": "by Grace Gold"
+  },
+  "template": {
+    "entry": "template/index.ts",
+    "composition": "JWTClip",
+    "scene_meanings": "template/scene-meanings.mjs"
+  },
+  "rules": "rules/clip-rules.md",
+  "clips_per_episode": [
+    9,
+    12
+  ],
+  "captivate": {
+    "show_id_env": "CAPTIVATE_SHOW_ID",
+    "spotify": "https://open.spotify.com/show/3asHeVVkuHC9lzzksmPWN6"
+  },
+  "zernio": {
+    "platforms": [
+      "instagram",
+      "tiktok",
+      "youtube"
+    ],
+    "usernames": [
+      "quantumlightscience"
+    ],
+    "account_ids": [
+      "6ada648ea814ba0f8158b4f7",
+      "6ada64a470fd2403ff1e98d8",
+      "6ada64cc184a57f0742f299c"
+    ],
+    "profile_id": "6ada644a3b2ddf7e290f17a7",
+    "profile_name": "Journeys with Time"
+  },
+  "captions": {
+    "voice": "reverent, warm, curious, precise. Never hype, clickbait, fear, emoji spam or medical claims; Grace's own ideas are always called 'the Quantum Light Science framework' (never 'her framework' or 'Grace Gold's framework') and presented as that framework's view, not established physics.",
+    "cta": "Full episode: Journeys with Time on Spotify and all podcast apps (link in bio).",
+    "hashtags": [
+      "#JourneysWithTime",
+      "#QuantumLightScience"
+    ]
+  },
+  "schedule": {
+    "days": [
+      "mon",
+      "tue",
+      "wed",
+      "thu",
+      "fri",
+      "sat",
+      "sun"
+    ],
+    "time": "08:00",
+    "timezone": "Europe/London",
+    "cadence_note": "Now: one episode a week, its reels 1 a day at 08:00 UK. Later: 3 episodes a week with a week off, several reels a day."
+  },
+  "open_questions": [
+    "Captivate lists the show as 'Journey with Time' — confirm which name is right."
+  ]
+}

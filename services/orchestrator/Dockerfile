@@ -6,10 +6,12 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 COPY packages/contracts/package.json packages/contracts/
 COPY packages/media/package.json packages/media/
+COPY packages/agents/package.json packages/agents/
 COPY services/orchestrator/package.json services/orchestrator/
 RUN npm ci --omit=dev --workspace @mmos/orchestrator --include-workspace-root=false
 COPY packages/contracts packages/contracts
 COPY packages/media packages/media
+COPY packages/agents packages/agents
 COPY services/orchestrator services/orchestrator
 ENV NODE_ENV=production
 WORKDIR /app/services/orchestrator

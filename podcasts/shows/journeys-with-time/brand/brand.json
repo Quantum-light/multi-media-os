@@ -1,0 +1,48 @@
+{
+  "brand": "Journeys with Time",
+  "version": 1,
+  "updated": "2026-10-19",
+  "standalone": "Journeys with Time has its own brand and its own process. It does not inherit from any other show or system.",
+  "feeling": {
+    "core": "Awe, with the ground still under your feet.",
+    "beats": ["Stillness", "Wonder", "Vastness", "Gravitas", "Return"],
+    "is": ["slow as breath", "atmospheric", "ethereal", "graphic", "regal", "luxurious", "reverent", "precise"],
+    "never": ["hype", "fear", "clickbait", "cheap mysticism", "fast cuts", "cluttered"]
+  },
+  "type": { "titles": "Cinzel", "body_and_captions": "Crimson Pro" },
+  "palette": {
+    "night_purple": "#150A26", "royal_velvet": "#22103C", "regal_amethyst": "#40205E", "orchid": "#A47BE6",
+    "platinum": "#ECE7F5", "soft_platinum": "#C8C1D8", "rich_gold": "#D9A84E", "dawn_gold": "#E9C27A"
+  },
+  "art_direction": {
+    "principle": "Atmospheric and ethereal, yet graphic. AI makes only the atmosphere; code draws the science as fine burnished-gold line work.",
+    "atmosphere": "veils, haze, mist, void, depth, light passing through darkness; painterly, matte, grain; no objects",
+    "graphic": "crisp thin gold lines (light cone, rings, orbits, spacetime grid, waves, pulse), lots of negative space, no glow",
+    "references_used": ["IMG_2401 (misty horizon, lone figure)", "IMG_2400 (dune and floating silk)", "IMG_5905 (figure of light threads)", "IMG_2397 (soft ethereal profile)", "IMG_2405 (spectral light)"],
+    "reference_strength": 0.22,
+    "style_prompt": "atmospheric and ethereal, a vast quiet void, veils of haze and soft mist, depth and distance, deep regal night-purple and aubergine darkness (#150A26), a restrained touch of burnished gold and soft platinum light, painterly fine art, matte, film grain, minimal, lots of empty negative space, no objects, no buildings, no people, no faces, no text, no neon, no glow effects, no bokeh, no sparkles, no glitter, no lens flare, no pink or magenta, no 3D render, vertical 9:16, lower third falling into deep shadow",
+    "motion_prompt": "almost still and atmospheric; mist and veils drift very slowly, light shifts gently, a slow steady camera drift forward; calm, regal, no glow, no sparkle, no flicker, no new objects, no cuts, no text",
+    "new_plates_per_clip": [2, 4],
+    "max_new_plates_per_episode": 24
+  },
+  "never_do": [
+    "neon or saturated pink and magenta",
+    "glow treatments, bloom, light leaks, lens flare",
+    "bokeh, glitter, sparkle",
+    "3D-rendered objects or faces (rejected: liquid-gold, 'the 3D aspect')",
+    "photographic objects in a room (hourglasses, clocks, crystals as products)",
+    "solid AI-drawn science objects: the science is always drawn in code",
+    "copying content from reference images; take only their feeling",
+    "text or letters inside generated art"
+  ],
+  "plates": [
+    { "id": "misty-horizon", "pairs_with": "cone", "means": "time's direction, different views, the present moment", "why_approved": "different views" },
+    { "id": "silk-veil", "pairs_with": "rings", "means": "cycles, the disconnection of time, measuring time", "why_approved": "the disconnection of time" },
+    { "id": "light-threads", "pairs_with": "orbits", "means": "light, cosmos, trails of time, energy", "why_approved": "the light and lines" },
+    { "id": "deep-veil", "pairs_with": "spacetime", "means": "gravity, spacetime, physics frameworks, depth", "why_approved": "the graphic look of spacetime" },
+    { "id": "spectral-mist", "pairs_with": "waves", "means": "frequency, vibration, waves, resonance", "why_approved": "frequencies of waves", "note": "plate contains neon-coloured bars from its reference; a clean variant is offered" },
+    { "id": "breath-of-light", "pairs_with": "pulse", "means": "coherence, the heart, breath, healing", "why_approved": "yes" }
+  ],
+  "undecided": ["dusk-field (horizon scene)"],
+  "rejected": [{ "id": "liquid-gold", "why": "the 3D aspect" }]
+}
