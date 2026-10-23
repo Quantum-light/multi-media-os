@@ -38,7 +38,13 @@ regardless would fail every job on arrival and mark the episode failed.
    style. The output is a cut list, not a render: cheap to redo, cheap to preview.
 3. **understand** — themes, claims, moments. Fills the graph tables that Map,
    Plan and Constellation read.
-4. **clip** — the model proposes candidates; `selectClips` decides the slate.
+4. **clip** — done, 23 Oct 2026. The model proposes candidates against Grace's
+   four signals, `selectClips` decides the slate, and the slate is written to
+   `public.clips` (migration 0017, append-only: a re-run writes a fresh set
+   against its own job and nothing is ever deleted). The step's own result is
+   only the shape of it — target, proposed, chosen, reserve, shortfall — so a
+   thin episode says how far short it fell instead of padding. It is registered
+   only when `ANTHROPIC_API_KEY` is set, with the other two paid steps.
 5. **write** — titles, descriptions, captions, posts, in the brand's voice.
 
 ## Phase 3 — Review
@@ -48,9 +54,17 @@ piece side by side, every planned post, and the agent chat that edits any of it
 in words. One Approve schedules everything.
 
 **Every correction made here writes a `style_edits` row.** That is the loop
-closing: from here the system has a record of where it was wrong.
+closing: from here the system has a record of where it was wrong. Done, 23 Oct
+2026, and done once rather than twice: `save_piece_edit` (migration 0018) keeps
+the version and records the correction in the same transaction, so a correction
+cannot be lost from a save. Anything that is not written text — a cut, a clip, a
+graphic, a posting time — goes through `record_correction`, the same one door.
+`voice_lessons` is superseded and left in place; `voice_lesson_feed` reads the
+corrections in its old shape.
 
-Then **Clip Studio** — the ranked board, the chosen slate, the reserve.
+**Clip Studio** (`/review/<episode>/clips`) — done, 23 Oct 2026. The ranked
+board, the chosen slate and the reserve, newest run only, with the older rows
+kept as a record. Review links here and says in one line how the slate came out.
 
 ## Phase 4 — the loop learns
 
@@ -85,7 +99,8 @@ Calendar layers. Resend SMTP, to end the hourly sign-in limit. Cost ceilings —
 | | |
 | --- | --- |
 | `ASSEMBLYAI_API_KEY` in Railway | Phase 2 starts |
-| `ANTHROPIC_API_KEY` in Railway | the rest of Phase 2 |
+| `ANTHROPIC_API_KEY` in Railway | understand, write and clip |
+| `0014_record_understand.sql` in the Supabase SQL editor | understand can record its result (it contains a `delete`, which the tooling cannot confirm from here, so 0013 ships a stub that raises until this is applied) |
 | The show's styles, into Style Studio | written in a working session, pasted in |
 | Zernio key | Phase 5 |
 

@@ -90,6 +90,85 @@ export type Database = {
           },
         ]
       }
+      clips: {
+        Row: {
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          end_s: number
+          episode_id: string
+          hook: string
+          id: string
+          job_id: string
+          quote: string
+          rank: number
+          reason: string
+          score: number
+          signal: string
+          start_s: number
+          state: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          end_s: number
+          episode_id: string
+          hook: string
+          id?: string
+          job_id: string
+          quote: string
+          rank: number
+          reason: string
+          score: number
+          signal: string
+          start_s: number
+          state: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          end_s?: number
+          episode_id?: string
+          hook?: string
+          id?: string
+          job_id?: string
+          quote?: string
+          rank?: number
+          reason?: string
+          score?: number
+          signal?: string
+          start_s?: number
+          state?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clips_episode_id_fkey"
+            columns: ["episode_id"]
+            isOneToOne: false
+            referencedRelation: "episodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clips_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clips_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       edges: {
         Row: {
           created_at: string
@@ -1232,7 +1311,35 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      voice_lesson_feed: {
+        Row: {
+          after: string | null
+          before: string | null
+          brand_id: string | null
+          created_at: string | null
+          id: string | null
+          note: string | null
+          piece_kind: string | null
+          platform: string | null
+          workspace_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shows_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_edits_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       approve_episode: { Args: { p_episode: string }; Returns: number }
@@ -1245,7 +1352,21 @@ export type Database = {
           scheduled_for: string
         }[]
       }
+      record_correction: {
+        Args: {
+          p_accepted: Json
+          p_episode: string
+          p_note?: string
+          p_proposed: Json
+          p_subject: string
+        }
+        Returns: string
+      }
       save_piece: {
+        Args: { p_body: string; p_note?: string; p_piece: string; p_source?: string }
+        Returns: number
+      }
+      save_piece_edit: {
         Args: { p_body: string; p_note?: string; p_piece: string; p_source?: string }
         Returns: number
       }

@@ -3,7 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { approveEpisode, chat, restoreVersion, savePiece } from "@/lib/review/service";
+import { CorrectionInput, type Subject } from "@/lib/review/corrections";
+import { approveEpisode, chat, recordCorrection, restoreVersion, savePiece } from "@/lib/review/service";
+import type { SaveResult } from "@/lib/save";
 import { createClient } from "@/lib/supabase/server";
 
 export type ActionResult = { ok: true; message: string } | { ok: false; message: string };
@@ -28,6 +30,30 @@ export async function restoreVersionAction(episodeId: string, pieceId: string, v
     return { ok: true, message: `Restored as version ${v}` };
   } catch (e) {
     return { ok: false, message: message(e) };
+  }
+}
+
+/**
+ * Records a correction a person made to something other than the text: a cut
+ * they moved, a clip they swapped, a graphic, a posting time. One door for all
+ * of them, so a new kind of correction needs no new action. Corrections to the
+ * text come through savePieceAction, which records them with the version.
+ */
+export async function recordCorrectionAction(input: {
+  episodeId: string;
+  subject: Subject;
+  proposed: Record<string, unknown>;
+  accepted: Record<string, unknown>;
+  note?: string;
+}): Promise<SaveResult> {
+  const parsed = CorrectionInput.safeParse(input);
+  if (!parsed.success) return { ok: false, message: "That correction could not be recorded.", problems: ["The correction is not in a shape the record keeps."] };
+  try {
+    const recorded = await recordCorrection(await createClient(), parsed.data);
+    if (recorded) revalidatePath(`/review/${parsed.data.episodeId}`);
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, message: message(e), problems: [] };
   }
 }
 

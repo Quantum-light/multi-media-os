@@ -96,7 +96,8 @@ export default async function EpisodePage({ params }: Props) {
           <h2 id="shorts" className="heading">Shorts</h2>
         </div>
         <p className="quiet" style={{ margin: 0 }}>
-          None yet. The finder reads the transcript, scores every moment against the four signals, and offers a ranked slate here with the rest held in reserve.
+          The finder reads the transcript, scores every moment against the four signals, and offers a ranked slate with the rest held in reserve.{" "}
+          <Link href={`/review/${episode.id}/clips`} className="link-gold">Open Clip Studio</Link>
         </p>
       </section>
     </>

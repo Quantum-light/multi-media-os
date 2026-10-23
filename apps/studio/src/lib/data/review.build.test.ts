@@ -15,7 +15,14 @@ describe("review", () => {
 
   it("reads step results through their contracts and ignores odd ones", () => {
     const a = buildAnalysis({ cut: { transcriptKey: "k", durationS: 60, cuts: [{ startS: 1, endS: 2, reason: "filler", text: "um" }], removedS: 1, keptS: 59 }, understand: { from: "test" }, clip: null });
-    expect(a).toMatchObject({ durationS: 60, keptS: 59, cuts: [{ reason: "filler" }], summary: null, moments: [], clips: [] });
+    expect(a).toMatchObject({ durationS: 60, keptS: 59, cuts: [{ reason: "filler" }], summary: null, moments: [], clipSlate: null });
+  });
+
+  it("says how the slate came out, and says plainly when nothing cleared the bar", () => {
+    const found = buildAnalysis({ cut: null, understand: null, clip: { target: 21, proposed: 30, chosen: 19, reserve: 4, shortfall: 2, model: "m" } });
+    expect(found.clipSlate?.line).toBe("19 chosen of the 21 this episode wanted, 4 held in reserve.");
+    const none = buildAnalysis({ cut: null, understand: null, clip: { target: 21, proposed: 3, chosen: 0, reserve: 0, shortfall: 21, model: "m" } });
+    expect(none.clipSlate?.line).toBe("Nothing cleared the bar. This episode wanted 21.");
   });
 
   it("jumps over cuts, including ones that touch, and leaves kept time alone", () => {

@@ -1,13 +1,36 @@
 import { anthropic, reviewChat, type ChatContext, type ChatEdit, type ChatTurn } from "@mmos/agents";
 import { UnderstandOutput } from "@mmos/contracts";
 import type { StudioClient } from "@/lib/supabase/server";
+import { correctionArgs, type CorrectionInput } from "./corrections";
 
 /** Review's writes. Each goes through a definer function that checks the person's role and keeps a version. */
 
+const NOT_YOURS = "You can view this episode but not edit it.";
+
+/**
+ * Saves new text for a piece. `save_piece_edit` keeps the version, exactly as
+ * `save_piece` always has, and records the change as one correction against the
+ * style that produced the text — both in the same transaction, so a correction
+ * is never lost from a save.
+ */
 export async function savePiece(supabase: StudioClient, pieceId: string, body: string, source: "person" | "chat", note?: string): Promise<number> {
-  const { data, error } = await supabase.rpc("save_piece", { p_piece: pieceId, p_body: body, p_source: source, ...(note ? { p_note: note } : {}) });
-  if (error) throw new Error(error.code === "42501" ? "You can view this episode but not edit it." : error.message);
+  const { data, error } = await supabase.rpc("save_piece_edit", { p_piece: pieceId, p_body: body, p_source: source, ...(note ? { p_note: note } : {}) });
+  if (error) throw new Error(error.code === "42501" ? NOT_YOURS : error.message);
   return data;
+}
+
+/**
+ * Records a correction to anything that is not written text — a cut, a clip, a
+ * graphic, a posting time. One door, one record: a new kind of correction calls
+ * this, it does not get a table of its own.
+ * Answers false when the person changed nothing.
+ */
+export async function recordCorrection(supabase: StudioClient, input: CorrectionInput): Promise<boolean> {
+  const args = correctionArgs(input);
+  if (!args) return false;
+  const { error } = await supabase.rpc("record_correction", args);
+  if (error) throw new Error(error.code === "42501" ? NOT_YOURS : error.message);
+  return true;
 }
 
 export async function restoreVersion(supabase: StudioClient, pieceId: string, version: number): Promise<number> {
@@ -34,8 +57,9 @@ async function chatContext(supabase: StudioClient, episodeId: string): Promise<C
   if (err) throw new Error(err.message);
   if (!episode.data) throw new Error("Episode not found");
   const brandId = episode.data.shows?.brand_id;
+  // The voice lessons are a reading of the one record of a correction, not a second record of it.
   const lessons = brandId
-    ? await supabase.from("voice_lessons").select("piece_kind, platform, before, after").eq("brand_id", brandId).order("created_at", { ascending: false }).limit(20)
+    ? await supabase.from("voice_lesson_feed").select("piece_kind, platform, before, after").eq("brand_id", brandId).order("created_at", { ascending: false }).limit(20)
     : { data: [] };
   const u = UnderstandOutput.safeParse(understand.data?.output);
   return {
@@ -46,7 +70,7 @@ async function chatContext(supabase: StudioClient, episodeId: string): Promise<C
     transcript: transcript.data?.text ?? "",
     pieces: (pieces.data ?? []).map((p) => ({ id: p.id, kind: p.kind as ChatContext["pieces"][number]["kind"], platform: p.platform, body: p.body, options: p.options })),
     voiceKit: episode.data.shows?.brands?.voice_kit ?? null,
-    voiceLessons: (lessons.data ?? []).map((l) => ({ pieceKind: l.piece_kind, platform: l.platform, before: l.before, after: l.after })),
+    voiceLessons: (lessons.data ?? []).map((l) => ({ pieceKind: l.piece_kind ?? "", platform: l.platform, before: l.before ?? "", after: l.after ?? "" })),
   };
 }
 

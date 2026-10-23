@@ -213,8 +213,8 @@
     {
       "id": "p2.clip-step",
       "phase": 2,
-      "title": "The clip step produces a scored slate (it caps at 8 and does not use the four signals yet)",
-      "done": false,
+      "title": "The clip step finds the shorts against the four signals and writes the slate to public.clips",
+      "done": true,
       "checks": [
         {
           "kind": "file",
@@ -228,6 +228,24 @@
           "kind": "contains",
           "path": "services/orchestrator/src/steps/shorts.ts",
           "text": "selectClips"
+        },
+        {
+          "kind": "contains",
+          "path": "packages/agents/src/clip.ts",
+          "text": "offer_clips"
+        },
+        {
+          "kind": "contains",
+          "path": "services/orchestrator/src/main.ts",
+          "text": "PgClipSlateWriter"
+        },
+        {
+          "kind": "migration",
+          "name": "0017_clips"
+        },
+        {
+          "kind": "table",
+          "name": "clips"
         }
       ]
     },
@@ -288,17 +306,31 @@
     {
       "id": "p3.review-records-edits",
       "phase": 3,
-      "title": "Review's corrections reach the style loop (today they land in voice_lessons only)",
-      "done": false,
+      "title": "Review's corrections reach the style loop: one record, written in the same transaction as the save",
+      "done": true,
       "checks": [
         {
-          "kind": "table",
-          "name": "voice_lessons"
+          "kind": "migration",
+          "name": "0018_one_loop"
+        },
+        {
+          "kind": "function",
+          "schema": "private",
+          "name": "record_correction"
+        },
+        {
+          "kind": "function",
+          "schema": "public",
+          "name": "save_piece_edit"
         },
         {
           "kind": "contains",
-          "path": "apps/studio/src/app/(studio)/review/[episode]/actions.ts",
-          "text": "style_edits"
+          "path": "apps/studio/src/lib/review/service.ts",
+          "text": "save_piece_edit"
+        },
+        {
+          "kind": "file",
+          "path": "apps/studio/src/lib/review/corrections.ts"
         }
       ]
     },
@@ -306,11 +338,20 @@
       "id": "p3.clip-studio",
       "phase": 3,
       "title": "Clip Studio: the ranked board, the slate and the reserve",
-      "done": false,
+      "done": true,
       "checks": [
         {
           "kind": "file",
-          "path": "apps/studio/src/app/(studio)/review/clips/page.tsx"
+          "path": "apps/studio/src/app/(studio)/review/[episode]/clips/page.tsx"
+        },
+        {
+          "kind": "file",
+          "path": "apps/studio/src/lib/data/clips.ts"
+        },
+        {
+          "kind": "contains",
+          "path": "apps/studio/src/lib/data.ts",
+          "text": "getClipStudio"
         }
       ]
     },

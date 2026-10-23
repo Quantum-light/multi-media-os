@@ -9,8 +9,6 @@ import styles from "../review.module.css";
 
 export const metadata = { title: "Review · multi-media os" };
 
-const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
-
 export default async function ReviewEpisodePage({ params }: { params: Promise<{ episode: string }> }) {
   const { episode } = await params;
   if (!/^[0-9a-f-]{36}$/.test(episode)) notFound();
@@ -55,15 +53,11 @@ export default async function ReviewEpisodePage({ params }: { params: Promise<{ 
             )}
           </section>
 
-          {data.clips.length > 0 ? (
+          {data.clipSlate ? (
             <section aria-labelledby="clips">
               <h2 id="clips" className="heading" style={{ fontSize: 24, marginBottom: 8 }}>Short clips</h2>
-              {data.clips.map((c) => (
-                <div key={c.startS} className={styles.post}>
-                  <span>{c.title}</span>
-                  <span className="quiet figure">{mmss(c.startS)} to {mmss(c.endS)}</span>
-                </div>
-              ))}
+              <p className="quiet" style={{ marginTop: 0 }}>{data.clipSlate.line}</p>
+              <Link href={`/review/${data.id}/clips`} className="link-gold">Open Clip Studio</Link>
             </section>
           ) : null}
 

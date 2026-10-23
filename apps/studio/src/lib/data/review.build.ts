@@ -16,6 +16,12 @@ export type ReviewPiece = {
 };
 
 export type ReviewCut = { startS: number; endS: number; reason: string; text: string };
+
+/**
+ * How the shorts came out, as a line Review can read. The slate itself lives in
+ * public.clips and belongs to Clip Studio; Review only says how many and links there.
+ */
+export type ClipSlateSummary = { target: number; chosen: number; reserve: number; shortfall: number; line: string };
 export type ReviewPost = { channelId: string; platform: string; handle: string; when: string | null };
 
 export type ReviewEpisode = {
@@ -30,7 +36,7 @@ export type ReviewEpisode = {
   cuts: ReviewCut[];
   summary: string | null;
   moments: { startS: number; kind: string; quote: string }[];
-  clips: { startS: number; endS: number; title: string }[];
+  clipSlate: ClipSlateSummary | null;
   pieces: ReviewPiece[];
   posts: ReviewPost[];
   canApprove: boolean;
@@ -79,8 +85,15 @@ export function buildAnalysis(outputs: { cut: unknown; understand: unknown; clip
     cuts: cut.success ? cut.data.cuts.map((c) => ({ startS: c.startS, endS: c.endS, reason: c.reason, text: c.text })) : [],
     summary: u.success ? u.data.summary : null,
     moments: u.success ? u.data.moments.map((m) => ({ startS: m.startS, kind: m.kind, quote: m.quote })) : [],
-    clips: clip.success ? clip.data.clips.map((c) => ({ startS: c.startS, endS: c.endS, title: c.title })) : [],
+    clipSlate: clip.success ? slateSummary(clip.data) : null,
   };
+}
+
+/** "19 chosen of the 21 this episode wanted, 4 held in reserve." */
+export function slateSummary(o: { target: number; chosen: number; reserve: number; shortfall: number }): ClipSlateSummary {
+  const held = o.reserve === 0 ? "" : `, ${o.reserve} held in reserve`;
+  const line = o.chosen === 0 ? `Nothing cleared the bar. This episode wanted ${o.target}.` : `${o.chosen} chosen of the ${o.target} this episode wanted${held}.`;
+  return { target: o.target, chosen: o.chosen, reserve: o.reserve, shortfall: o.shortfall, line };
 }
 
 /** "Tue 13 Oct, 09:00" in the workspace's time zone. */

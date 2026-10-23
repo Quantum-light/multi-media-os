@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { FakeLlm } from "@mmos/agents";
 import type { StepName } from "@mmos/contracts";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { slateRows, type ClipRow, type ClipSlateWriter, type SlateRef } from "../clips/store";
 import type { Handler } from "../handler";
 import { registry, runOnce } from "../runner";
 import { folderStore } from "../storage";
@@ -36,6 +37,43 @@ const DRAFT = {
   captions: [{ platform: "youtube", body: "Why time is shared." }, { platform: "instagram", body: "One hour, phone away." }, { platform: "threads", body: "Time is the one thing you give away." }],
 };
 
+/**
+ * The fake model answers the clip tool out of the transcript it was shown, so its
+ * candidate is really in the recording and survives grounding. It takes the longest
+ * line and its first forty words: the fake transcriber spaces words 0.4s apart, so
+ * that is about sixteen seconds, inside the 15-to-90 a clip has to run.
+ */
+function offerClips(prompt: string): unknown {
+  const lines = prompt.split("\n").filter((l) => /^\[\d+s /.test(l));
+  const line = lines.sort((a, b) => b.length - a.length)[0];
+  if (!line) return { candidates: [] };
+  const startS = Number(/^\[(\d+)s/.exec(line)![1]);
+  const spoken = line.slice(line.indexOf(": ") + 2).split(" ").slice(0, 40);
+  return {
+    candidates: [
+      {
+        startS,
+        endS: startS + spoken.length * 0.4,
+        signal: "standalone_idea",
+        score: 82,
+        hook: spoken.slice(0, 6).join(" "),
+        quote: spoken.join(" "),
+        reason: "It stands on its own.",
+      },
+    ],
+  };
+}
+
+/** The slate the clip step writes, kept in memory so the chain can be checked without a database. */
+class MemoryClipWriter implements ClipSlateWriter {
+  readonly rows: ClipRow[] = [];
+  async save(ref: SlateRef, plan: Parameters<ClipSlateWriter["save"]>[1]): Promise<number> {
+    const rows = slateRows(ref, plan);
+    this.rows.push(...rows);
+    return rows.length;
+  }
+}
+
 describe("the agent steps, end to end on fakes", () => {
   let root: string;
   beforeAll(async () => {
@@ -50,13 +88,14 @@ describe("the agent steps, end to end on fakes", () => {
     const q = new MemoryQueue();
     const reader = new MemoryEpisodeReader(q);
     const transcriber = new FakeTranscriber(SPEECH);
-    const llm = new FakeLlm({ map_episode: UNDERSTANDING, save_drafts: DRAFT });
+    const llm = new FakeLlm({ map_episode: UNDERSTANDING, save_drafts: DRAFT, offer_clips: offerClips });
+    const clips = new MemoryClipWriter();
     const handlers: Handler[] = [
       transcribeHandler({ store, reader, transcriber }),
       cutHandler({ store }),
       understandHandler({ store, reader, llm }),
       writeHandler({ reader, llm }),
-      clipHandler({ reader }),
+      clipHandler({ reader, store, llm, clips }),
       storyboardHandler({ reader }),
     ];
     const map = registry(handlers);
@@ -81,7 +120,9 @@ describe("the agent steps, end to end on fakes", () => {
     expect(written.title).toBe("The watch my grandmother gave me");
     expect(written.chaptersText.split("\n")[0]).toBe("0:00 Welcome");
     expect(written.captions).toHaveLength(3);
-    expect((out("clip") as { clips: unknown[] }).clips).toHaveLength(1);
+    // The clip step's own result is the shape of the slate; the slate itself went to the writer.
+    expect(out("clip")).toMatchObject({ target: 21, proposed: 1, chosen: 1, reserve: 0, shortfall: 20 });
+    expect(clips.rows.map((r) => [r.rank, r.state, r.signal])).toEqual([[1, "chosen", "standalone_idea"]]);
     expect((out("storyboard") as { cues: { block: string }[] }).cues.map((c) => c.block)).toContain("chapter_card");
     expect([...q.rows.values()].find((r) => r.step === "understand")!.costPence).toBeGreaterThan(0);
   });

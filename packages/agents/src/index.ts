@@ -5,3 +5,4 @@ export * from "./understand";
 export * from "./write";
 export * from "./testing";
 export * from "./review-chat";
+export * from "./clip";

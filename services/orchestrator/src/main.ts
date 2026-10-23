@@ -9,6 +9,7 @@
 import { hostname } from "node:os";
 import postgres from "postgres";
 import { anthropic } from "@mmos/agents";
+import { PgClipSlateWriter } from "./clips/store";
 import { databaseConnection } from "./db/connect";
 import { PgEpisodeReader } from "./episode";
 import type { Handler } from "./handler";
@@ -40,7 +41,7 @@ const reader = new PgEpisodeReader(sql);
 const store = r2WorkerStore();
 const stop = new AbortController();
 
-const handlers: Handler[] = [ingestHandler(store), cutHandler({ store }), clipHandler({ reader }), storyboardHandler({ reader })];
+const handlers: Handler[] = [ingestHandler(store), cutHandler({ store }), storyboardHandler({ reader })];
 const waiting: string[] = [];
 if (env.ASSEMBLYAI_API_KEY) {
   const transcriber = assemblyAi({ apiKey: env.ASSEMBLYAI_API_KEY, ...(env.ASSEMBLYAI_BASE_URL ? { baseUrl: env.ASSEMBLYAI_BASE_URL } : {}) });
@@ -48,8 +49,8 @@ if (env.ASSEMBLYAI_API_KEY) {
 } else waiting.push("transcribe (add ASSEMBLYAI_API_KEY)");
 if (env.ANTHROPIC_API_KEY) {
   const llm = anthropic({ apiKey: env.ANTHROPIC_API_KEY, ...(env.ANTHROPIC_MODEL ? { model: env.ANTHROPIC_MODEL } : {}) });
-  handlers.push(understandHandler({ store, reader, llm }), writeHandler({ reader, llm }));
-} else waiting.push("understand and write (add ANTHROPIC_API_KEY)");
+  handlers.push(understandHandler({ store, reader, llm }), writeHandler({ reader, llm }), clipHandler({ reader, store, llm, clips: new PgClipSlateWriter(sql) }));
+} else waiting.push("understand, write and clip (add ANTHROPIC_API_KEY)");
 
 for (const sig of ["SIGTERM", "SIGINT"] as const) {
   process.on(sig, () => {
