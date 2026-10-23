@@ -677,6 +677,137 @@ export type Database = {
           },
         ]
       }
+      style_edits: {
+        Row: {
+          accepted: Json
+          created_at: string
+          created_by: string | null
+          episode_id: string | null
+          folded_into: string | null
+          id: string
+          note: string
+          proposed: Json
+          style_id: string | null
+          subject: string
+          workspace_id: string
+        }
+        Insert: {
+          accepted: Json
+          created_at?: string
+          created_by?: string | null
+          episode_id?: string | null
+          folded_into?: string | null
+          id?: string
+          note?: string
+          proposed: Json
+          style_id?: string | null
+          subject: string
+          workspace_id: string
+        }
+        Update: {
+          accepted?: Json
+          created_at?: string
+          created_by?: string | null
+          episode_id?: string | null
+          folded_into?: string | null
+          id?: string
+          note?: string
+          proposed?: Json
+          style_id?: string | null
+          subject?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "style_edits_episode_id_fkey"
+            columns: ["episode_id"]
+            isOneToOne: false
+            referencedRelation: "episodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_edits_folded_into_fkey"
+            columns: ["folded_into"]
+            isOneToOne: false
+            referencedRelation: "style_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_edits_style_id_fkey"
+            columns: ["style_id"]
+            isOneToOne: false
+            referencedRelation: "styles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_edits_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      style_versions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          never_do: string[]
+          note: string
+          prompt: string
+          recipe: Json
+          source: string
+          style_id: string
+          version: number
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          never_do?: string[]
+          note?: string
+          prompt: string
+          recipe?: Json
+          source: string
+          style_id: string
+          version: number
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          never_do?: string[]
+          note?: string
+          prompt?: string
+          recipe?: Json
+          source?: string
+          style_id?: string
+          version?: number
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "style_versions_style_id_fkey"
+            columns: ["style_id"]
+            isOneToOne: false
+            referencedRelation: "styles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_versions_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       styles: {
         Row: {
           archived_at: string | null
