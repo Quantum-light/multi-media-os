@@ -236,6 +236,57 @@ export type Database = {
           },
         ]
       }
+      ideas: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          id: string
+          pillar: string
+          show_id: string
+          slot_at: string | null
+          state: string
+          workspace_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          pillar: string
+          show_id: string
+          slot_at?: string | null
+          state?: string
+          workspace_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          pillar?: string
+          show_id?: string
+          slot_at?: string | null
+          state?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ideas_show_id_fkey"
+            columns: ["show_id"]
+            isOneToOne: false
+            referencedRelation: "shows"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ideas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invites: {
         Row: {
           accepted_at: string | null

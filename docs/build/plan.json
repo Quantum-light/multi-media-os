@@ -377,48 +377,102 @@
     {
       "id": "p6.map",
       "phase": 6,
-      "title": "Map: search everything she has ever said",
-      "done": false,
+      "title": "Map searches every word she has said: transcripts and moments, by phrase, from ?q=",
+      "done": true,
       "checks": [
         {
           "kind": "file",
-          "path": "apps/studio/src/app/(studio)/map/page.tsx"
+          "path": "apps/studio/src/lib/data/map.ts"
+        },
+        {
+          "kind": "file",
+          "path": "apps/studio/src/lib/data/map.build.test.ts"
+        },
+        {
+          "kind": "contains",
+          "path": "apps/studio/src/lib/data.ts",
+          "text": "searchEverything"
+        },
+        {
+          "kind": "contains",
+          "path": "apps/studio/src/components/Rail.tsx",
+          "text": "/map"
         }
       ]
     },
     {
       "id": "p6.plan",
       "phase": 6,
-      "title": "Plan and Trends, with Scout agents proposing from her own material",
-      "done": false,
+      "title": "Plan board: the weeks ahead, every empty slot a question tied to a pillar",
+      "done": true,
       "checks": [
         {
           "kind": "file",
           "path": "apps/studio/src/app/(studio)/plan/page.tsx"
+        },
+        {
+          "kind": "file",
+          "path": "apps/studio/src/lib/data/plan.build.test.ts"
+        },
+        {
+          "kind": "contains",
+          "path": "apps/studio/src/lib/data.ts",
+          "text": "getPlan"
+        },
+        {
+          "kind": "migration",
+          "name": "0016_ideas"
+        },
+        {
+          "kind": "table",
+          "name": "ideas"
         }
       ]
     },
     {
       "id": "p6.constellation",
       "phase": 6,
-      "title": "Constellation: themes through time, and holds for future moments",
-      "done": false,
+      "title": "Constellation: themes, what connects them, and holding a piece for a moment",
+      "done": true,
       "checks": [
         {
           "kind": "file",
           "path": "apps/studio/src/app/(studio)/constellation/page.tsx"
+        },
+        {
+          "kind": "file",
+          "path": "apps/studio/src/lib/data/constellation.build.test.ts"
+        },
+        {
+          "kind": "contains",
+          "path": "apps/studio/src/lib/data/constellation.ts",
+          "text": "time_anchors"
+        },
+        {
+          "kind": "contains",
+          "path": "apps/studio/src/app/(studio)/constellation/actions.ts",
+          "text": "holdForAnchor"
         }
       ]
     },
     {
       "id": "p6.analytics",
       "phase": 6,
-      "title": "Analytics: every KPI on Vision opens to its source",
-      "done": false,
+      "title": "Analytics: every KPI shows its number and says plainly which are still hand-typed",
+      "done": true,
       "checks": [
         {
           "kind": "file",
           "path": "apps/studio/src/app/(studio)/analytics/page.tsx"
+        },
+        {
+          "kind": "file",
+          "path": "apps/studio/src/lib/data/analytics.build.test.ts"
+        },
+        {
+          "kind": "contains",
+          "path": "apps/studio/src/lib/data.ts",
+          "text": "getAnalytics"
         }
       ]
     },
@@ -437,13 +491,22 @@
     {
       "id": "x.calendar-layers",
       "phase": 0,
-      "title": "Calendar layers: per show, per platform, themes and the arc",
-      "done": false,
+      "title": "Calendar layers: per show, per platform, themes alongside, all in the address",
+      "done": true,
       "checks": [
+        {
+          "kind": "file",
+          "path": "apps/studio/src/app/(studio)/calendar/Layers.tsx"
+        },
         {
           "kind": "contains",
           "path": "apps/studio/src/app/(studio)/calendar/page.tsx",
-          "text": "layer"
+          "text": "<Layers"
+        },
+        {
+          "kind": "contains",
+          "path": "apps/studio/src/lib/data/calendar.build.ts",
+          "text": "selectionFrom"
         }
       ]
     },
@@ -476,6 +539,44 @@
         {
           "kind": "file",
           "path": "services/orchestrator/src/publish/publish.test.ts"
+        }
+      ]
+    },
+    {
+      "id": "p6.settings",
+      "phase": 6,
+      "done": true,
+      "title": "Settings: the workspace, its people and invites, connected channels, and what the pipeline has cost",
+      "checks": [
+        {
+          "kind": "file",
+          "path": "apps/studio/src/app/(studio)/settings/page.tsx"
+        },
+        {
+          "kind": "file",
+          "path": "apps/studio/src/lib/data/settings.build.test.ts"
+        },
+        {
+          "kind": "contains",
+          "path": "apps/studio/src/lib/data.ts",
+          "text": "getSettings"
+        },
+        {
+          "kind": "contains",
+          "path": "apps/studio/src/app/(studio)/settings/actions.ts",
+          "text": "revokeInvite"
+        }
+      ]
+    },
+    {
+      "id": "x.people-have-no-names",
+      "phase": 0,
+      "done": false,
+      "title": "A member can be shown by name or email (members holds only user_id; needs a profiles table or a view)",
+      "checks": [
+        {
+          "kind": "table",
+          "name": "profiles"
         }
       ]
     }

@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { getCalendar } from "@/lib/data";
+import { plural } from "@/lib/format";
+import { Layers } from "./Layers";
 import styles from "./calendar.module.css";
 
 export const metadata = { title: "Calendar · multi-media os" };
@@ -7,12 +9,13 @@ export const metadata = { title: "Calendar · multi-media os" };
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const STATUS: Record<string, string> = { waiting_review: "waiting for review", scheduled: "scheduled", published: "live", failed: "failed" };
 
-type Props = { searchParams: Promise<{ month?: string }> };
+type Props = { searchParams: Promise<{ month?: string; show?: string | string[]; platform?: string | string[] }> };
 
 export default async function CalendarPage({ searchParams }: Props) {
-  const { month } = await searchParams;
-  const data = await getCalendar(month);
+  const { month, show, platform } = await searchParams;
+  const data = await getCalendar({ month, show, platform });
   if (!data) return null;
+  const moments = data.anchorsThisMonth.length;
 
   return (
     <>
@@ -21,16 +24,18 @@ export default async function CalendarPage({ searchParams }: Props) {
           <span className="eyebrow">Calendar</span>
           <h1 className="display">{data.monthLabel}</h1>
           <p className="lead">
-            {data.postCount === 0 ? "Nothing scheduled this month yet." : `${data.postCount} ${data.postCount === 1 ? "post" : "posts"} this month.`}
-            {data.anchorsThisMonth.length > 0 ? ` ${data.anchorsThisMonth.length} ${data.anchorsThisMonth.length === 1 ? "moment" : "moments"} in time to plan around.` : ""}
+            {data.postCount === 0 ? "Nothing scheduled this month yet." : `${plural(data.postCount, "post")} this month.`}
+            {moments > 0 ? ` ${plural(moments, "moment")} in time to plan around.` : ""}
           </p>
         </div>
         <nav aria-label="Months" style={{ display: "flex", gap: 8 }}>
-          <Link className="chip" href={`/calendar?month=${data.prev}`} aria-label="Previous month">←</Link>
-          <Link className="chip" href="/calendar">This month</Link>
-          <Link className="chip" href={`/calendar?month=${data.next}`} aria-label="Next month">→</Link>
+          <Link className="chip" href={data.prevHref} aria-label="Previous month">←</Link>
+          <Link className="chip" href={data.thisHref}>This month</Link>
+          <Link className="chip" href={data.nextHref} aria-label="Next month">→</Link>
         </nav>
       </header>
+
+      <Layers layers={data.layers} themes={data.themesThisMonth} hidden={data.hiddenCount} />
 
       <div className={styles.scroller}>
         <div className={styles.grid}>
@@ -44,11 +49,12 @@ export default async function CalendarPage({ searchParams }: Props) {
                 <span key={a} className={styles.anchor}>{a}</span>
               ))}
               {day.posts.map((p, i) => (
-                <span key={`${p.time}-${p.platform}-${i}`} className={styles.post} title={`${p.show} · ${p.platform} · ${STATUS[p.status] ?? p.status}`}>
+                <span key={`${p.time}-${p.platform}-${i}`} className={styles.post} title={`${p.show} · ${p.platform} · ${STATUS[p.status] ?? p.status}${p.themes.length > 0 ? ` · ${p.themes.join(", ")}` : ""}`}>
                   <span aria-hidden="true" className={styles.dot} style={p.accent ? { background: p.accent } : undefined} />
                   <span className="figure">{p.time}</span> {p.platform}
                 </span>
               ))}
+              {day.themes.length > 0 ? <span className={styles.dayThemes}>{day.themes.join(" · ")}</span> : null}
             </div>
           ))}
         </div>

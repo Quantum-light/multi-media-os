@@ -1,0 +1,34 @@
+/* Settings: the workspace, its people, what it is connected to, what it costs. */
+
+.counts { display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-end; }
+.count { display: flex; flex-direction: column; gap: 6px; }
+.countFigure { font-family: var(--font-figures), ui-monospace, monospace; font-variant-numeric: tabular-nums; font-size: 34px; line-height: 1; color: var(--ink); }
+
+.roleChip { white-space: nowrap; }
+
+.revoke { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.revokeButton {
+  padding: 0; border: 0; background: none; font: inherit; font-weight: 600; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 6px; text-decoration-color: rgba(201, 162, 74, 0.7);
+}
+.revokeButton:disabled { cursor: default; color: var(--ink-quiet); text-decoration-color: var(--hairline); }
+
+.spend { display: flex; flex-wrap: wrap; gap: 56px; align-items: flex-end; }
+.spendFigure {
+  font-family: var(--font-figures), ui-monospace, monospace; font-variant-numeric: tabular-nums;
+  font-size: 46px; line-height: 1; color: var(--ink);
+}
+.spendSecond { font-family: var(--font-figures), ui-monospace, monospace; font-variant-numeric: tabular-nums; font-size: 22px; color: var(--ink-soft); }
+
+.steps { display: grid; grid-template-columns: 1fr auto; gap: 10px 24px; margin: 0; font-size: 14px; max-width: 520px; }
+.steps dt { color: var(--ink-soft); }
+.steps dd { margin: 0; text-align: right; font-family: var(--font-figures), ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+.dot { width: 6px; height: 6px; border-radius: 999px; flex: 0 0 6px; }
+.dotOn { background: var(--good); }
+.dotOff { background: var(--gold); }
+
+@media (max-width: 560px) {
+  .spend, .counts { gap: 28px; }
+  .spendFigure { font-size: 36px; }
+}

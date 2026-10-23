@@ -1,0 +1,32 @@
+.meter { display: block; height: 10px; border-radius: 999px; overflow: hidden; background: rgba(46, 52, 66, 0.1); }
+.meterMeasured { display: block; height: 10px; background: var(--gold-gradient); }
+
+.kpis { display: flex; flex-direction: column; gap: 0; }
+.kpi { display: grid; grid-template-columns: minmax(0, 2fr) minmax(120px, 1.5fr) auto; gap: 10px 20px; align-items: center; padding: 18px 0; border-bottom: 1px solid var(--hairline); }
+.kpi:last-child { border-bottom: 0; }
+.kpiName { font-size: 15px; min-width: 0; }
+.kpiSource { grid-column: 1 / -1; font-size: 12px; color: var(--ink-quiet); display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; }
+.track { height: 2px; background: rgba(46, 52, 66, 0.1); }
+.fill { display: block; height: 2px; background: var(--gold); }
+.figures { font-size: 12px; white-space: nowrap; }
+
+.objective { display: flex; flex-direction: column; gap: 6px; padding-top: 20px; }
+.objectiveTitle { font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-quiet); }
+
+.table { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1.2fr) auto; gap: 2px 20px; font-size: 13px; align-items: baseline; }
+.th { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-quiet); padding-bottom: 10px; border-bottom: 1px solid var(--gold-hairline); }
+.td { padding: 14px 0; border-bottom: 1px solid var(--hairline); min-width: 0; overflow-wrap: anywhere; }
+
+.personas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; padding: 0; margin: 0; list-style: none; }
+.persona { display: flex; flex-direction: column; gap: 8px; padding: 22px 24px; border-radius: 22px; }
+.personaName { font-family: var(--font-title), Georgia, serif; font-size: 20px; }
+.evidence { margin: 0; padding-left: 18px; font-size: 13px; color: var(--ink-soft); }
+
+.split { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; align-items: start; }
+
+@media (max-width: 720px) {
+  .kpi { grid-template-columns: 1fr auto; }
+  .track { display: none; }
+  .table { grid-template-columns: 1fr; }
+  .th { display: none; }
+}

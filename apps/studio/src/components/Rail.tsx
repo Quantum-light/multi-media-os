@@ -15,9 +15,17 @@ const GROUPS: Group[] = [
       { href: "/upload", label: "Upload" },
       { href: "/review", label: "Review" },
       { href: "/episodes", label: "Episodes" },
+      { href: "/map", label: "Map" },
     ],
   },
-  { label: "Plan", items: [{ href: "/calendar", label: "Calendar" }] },
+  {
+    label: "Plan",
+    items: [
+      { href: "/calendar", label: "Calendar" },
+      { href: "/plan", label: "Plan" },
+      { href: "/constellation", label: "Constellation" },
+    ],
+  },
   {
     label: "Studio",
     items: [
@@ -25,6 +33,8 @@ const GROUPS: Group[] = [
       { href: "/vision", label: "Vision and goals" },
       { href: "/brand", label: "Brand and style" },
       { href: "/brand/styles", label: "Style Studio" },
+      { href: "/analytics", label: "Analytics" },
+      { href: "/settings", label: "Settings" },
     ],
   },
 ];
